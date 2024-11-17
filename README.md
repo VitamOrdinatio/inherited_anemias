@@ -1,0 +1,1 @@
+Step 1: Scrape NCBI GTR for genetic conditions 
