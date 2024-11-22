@@ -34,5 +34,15 @@ As the original scrape captured two mtDNA loci (i.e., MT-TN and MT-TS1), we want
 
 Across all 199 anemia-enriched genetic loci, we scraped 192,296 total alleles from each of six NCBI ClinVar categories (i.e., CC, B, LB, US, LP, and P). We performed multivariate statistical analyses, including pairplots, t-SNE, linear regressions, correlation coefficients, principal component analysis (PCA), PCA explaind variance ratios, unfiltered k-means clustering, and two-component (2PC) k-means clustering.
 
+**STEP 8: Perform standard visualization analyses on ClinVar allele categorical distributions**
 
-
+Across all 199 anemia-enriched genetic loci, we scraped 192,296 unique alleles from each of six NCBI ClinVar categories (i.e., CC, B, LB, US, LP, and P). We removed alleles in the CC and US categories, to arrive at a dataset of 199 loci made up of 112,534 raw allele counts across four NCBI ClinVar categories (i.e., B, LB, LP, and P).  We next visualized our 112K allelic dataset by generating the following output:
+		1) Two CSV files that track either raw allele counts or normalized allelic categorical frequencies.
+		2) A barplot of log2-transformed total allele counts across all 199 loci (PNG + SVG formats)
+		3) A histogram plot of log2-transformed total allele counts across ten-percentile bins for all 199 loci (PNG + SVG formats)
+		4) A pie chart of a slice of the top 20 loci after sorting the list of 199 genes by total allele counts (derived from 4 ClinVar categories)
+		5) A horizontal barplot showing the relative number of alleles across 4 categories for each of the top 20 loci by total allele counts
+		6) A pie chart of a slice of the top 20 loci after sorting the list of 199 genes by normalized allele frequencies (derived from 4 ClinVar categories)
+		7) A horizontal barplot showing the relative number of alleles across 4 categories for each of the top 20 loci by normalized allele frequencies
+		
+		
