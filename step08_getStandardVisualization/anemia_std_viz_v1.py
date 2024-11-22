@@ -7,7 +7,7 @@
         # P = pathogenic
     # NOTA BENE: The CSV file must contain the original allele counts (that are not normalized frequencies).
 
-# The output of this script follows this general standard analysis pipeline.  PNG/SVG plots are written to working directory:
+# The output of this script follows this general standard analysis pipeline.  CSV outs + PNG/SVG plots are written to working directory:
     # 1. A raw allele counts (CSV) file that contains the following columns: 
         #   # (an index column)
         #   Gene name
@@ -27,11 +27,11 @@
         #   P.freq                          (dark red)      #802A2A
         #   SUM of categorical allele freqs
 
-    # 3. Bar plot of Log2-transformed allele sums (B+LB+LP+P) vs. genes (n = 199 loci)
+    # 3. Bar plot of log2-transformed allele sums (B+LB+LP+P) vs. genes (n = 199 loci)
     
     # 4. Histogram (10% bin sizes) of total allele counts (B+LB+LP+P)
     
-    # 5. PIE chart of genes sorted by total allele number (with top XYZ genes as a XYZ % slice)
+    # 5. PIE chart of genes sorted by total allele number (with top20 genes as a 10% slice)
     
     # 6. Horizontal bar chart showing the sorted list of genes by top allele counts (descending sort).
         #   For each gene, raw number of each of 4 ClinVar categories: B, LB, LP, P.  Follow this color schema:
@@ -40,14 +40,25 @@
                 #   CATEGORY: Likely pathogenic     (light red)     #FCE5EA
                 #   CATEGORY: Pathogenic            (dark red)      #802A2A       
 
-    # 7. PIE chart of genes sorted by normalized allele categorical frequencies (with top XYZ genes as a XYZ % slice)
+    # 7. PIE chart of genes sorted by normalized PROBLEMATIC allele categorical frequencies (with top20 genes as a 10% slice)
     
-    # 8. Horizontal bar chart showing the sorted list of genes by top allele frequencies (descending sort).
+    # 8. Horizontal bar chart showing the sorted list of genes by top allele frequencies (descending sort of P then LP then LB, then B).
         #   For each gene, raw number of each of 4 ClinVar categories: B, LB, LP, P.  Follow this color schema:
                 #   CATEGORY: Benign                (dark blue)     #29386F
                 #   CATEGORY: Likely benign         (light blue)    #DFEDFA
                 #   CATEGORY: Likely pathogenic     (light red)     #FCE5EA
                 #   CATEGORY: Pathogenic            (dark red)      #802A2A       
+
+### CUSTOM COLOR PALETTE:
+# COLOR	        FILL
+# black	        #363636
+# grey	        #E5E5E5
+# blue	        #29386F
+# light blue	#DFEDFA
+# red	        #802A2A
+# light red	    #FCE5EA
+# green	        #44A043
+# light green	#E0F4DA
 
 
 
@@ -72,12 +83,13 @@ python
 ############################################################ IMPORTS
 import pandas as pd
 import numpy as np
+import math
 import seaborn as sns
 import matplotlib.pyplot as plt
 # from sklearn.manifold import TSNE
 
 # LOAD DATA
-alleles_df = pd.DataFrame()
+alleles_df = pd.DataFrame()                             # Note: alleles_df will never be sorted
 alleles_df = pd.read_csv('Anemia_199_genes_AlleleCount_4_ClinVar_classifiers.csv')
 # Extract columns into list variables:
 genes = alleles_df['gene_name'].tolist() 
@@ -90,7 +102,7 @@ rawPalleles = alleles_df['P'].tolist()
 # non_numeric = ['gene_name']
 # numeric_alleles_df = alleles_df.drop(non_numeric, axis=1)
 
-###########################################################
+########################################################### step 1: Table of raw allele counts
 
 # Create raw allele counts file (CSV):
         # 1. A raw allele counts (CSV) file that contains the following columns: 
@@ -130,7 +142,7 @@ alleles_df.to_csv('anemia_ClinVar_B_LB_LP_P_raw_allele_counts.csv')
 
 
 
-###########################################################
+########################################################### step 2: Table of categorical allele frequencies (normalized per locus)
 
 # Create transformed categorical allele frequencies file (CSV):
     # 2. A frequency-normalized allele counts (CSV) file that contains the following columns.  Allele frequencies are calculated on a per-locus basis.
@@ -192,6 +204,8 @@ dfAlleleFreqs['P.freq'] = freqPalleles
 # QC step to ensure that allele frequency SUMS each equal to 1.0
 # Use pd.sum function to calculate rowSUMS
 dfAlleleFreqs['alleleFreqSUM'] = dfAlleleFreqs.sum(axis=1, numeric_only=True)
+# Generate a listvar that tracks allele frequency SUMS per locus:
+alleleFreqSUMS = dfAlleleFreqs['alleleFreqSUM'].tolist()       # float type list
 # Set index to gene_name
 dfAlleleFreqs = dfAlleleFreqs.set_index('gene_name')
 # Write pd to disk
@@ -199,7 +213,355 @@ dfAlleleFreqs.to_csv('anemia_ClinVar_B_LB_LP_P_categorical_allele_freqs.csv')
 
 
 
-################## LEFT OFF HERE
+########################################################### step 3: bar plots of log2-transformed total allele counts (B+LB+LP+P)
+    
+    # 3. Bar plot of log2-transformed allele sums (B+LB+LP+P) vs. genes (n = 199 loci)
+
+#### Useful variables in memory:
+# labels
+genes               # str 
+# raw allele counts:
+rawBalleles         # INT
+rawLBalleles        # INT
+rawLPalleles        # INT
+rawPalleles         # INT
+alleleSUMS          # INT
+# normalized allele frequencies:
+freqBalleles        # floats
+freqLBalleles       # floats
+freqLPalleles       # floats
+freqPalleles        # floats
+alleleFreqSUMS      # floats
+# pd dataframes:
+alleles_df          # 199 (genes) x 5 cols (raw allele counts: B, LB, LP, P, SUM).  gene_name is set to df index
+dfAlleleFreqs       # 199 (genes) x 5 cols (norm allele counts: B.freq, LB.freq, LP.freq, P.freq, FreqSUM).  gene_name is set to df index
+
+# View a summary of raw allele counts dataframe:
+alleles_df.describe()
+                # B           LB          LP            P     alleleSUM
+# count  199.000000   199.000000  199.000000   199.000000    199.000000
+# mean    62.055276   289.552764   54.994975   158.894472    565.497487
+# std     97.449712   481.069102   94.265770   474.646486   1061.639084
+# min      0.000000     1.000000    0.000000     1.000000      5.000000
+# 25%     18.000000    30.500000    5.000000    18.000000     95.500000
+# 50%     38.000000   130.000000   18.000000    48.000000    235.000000
+# 75%     69.000000   360.000000   62.500000   139.000000    673.000000
+# max    845.000000  3752.000000  638.000000  5005.000000  10240.000000
+
+## Across all 199 loci, there is thus a large spread (variance) for total allele counts (alleleSUM), from 5-10K.
+## To view this together, we can perform a log2 transformation of the total allele counts per genetic locus.
+
+# Use math.log(x, base)
+math.log(8,2)   # returns 3.0, which means that 2^3.0 = 8
+
+# Reset counter
+i = 0
+# Set an accumulator listvar
+log2_alleleSUMS = []    
+
+for i in range(len(genes)):
+    # fetch the current gene's alleleSUM
+    alleleSum = alleleSUMS[i]
+    # calc the log2-value of the current locus' total allele count
+    log2_TFN = math.log(alleleSum, 2)
+    log2_alleleSUMS.append(log2_TFN)
+
+len(log2_alleleSUMS)    # 199 loci
+
+# Create a copy of alleles_df
+log2df = alleles_df
+# Append the log2-transformed alleleSUM column
+log2df['log2_alleleSUM'] = log2_alleleSUMS
+# Sort the log2df by log2_alleleSUM, in descending order
+log2df_sorted_byLOG2 = log2df.sort_values(by='log2_alleleSUM', ascending=False)
+
+
+# preview log2df
+log2df
+             # B    LB   LP    P  alleleSUM  log2_alleleSUM
+# gene_name
+# ABCA1      250   580   18   71        919        9.843921
+# ABCG8       81   202   24   45        352        8.459432
+# ACVRL1      94   191  168  373        826        9.689998
+# ADA2        44   150   31  121        346        8.434628
+# ALG8        71    86   20   32        209        7.707359
+# ...        ...   ...  ...  ...        ...             ...
+# MT-TV        5     5    4    3         17        4.087463
+# MT-RNR1     28    34    3    3         68        6.087463
+# MT-RNR2      0     1    1    3          5        2.321928
+# POLG       125  1049  180  246       1600       10.643856
+# POLG2       25   129    7   28        189        7.562242
+# [199 rows x 6 columns]
+
+
+# preview log2df_sorted_byLOG2
+log2df_sorted_byLOG2
+             # B    LB   LP     P  alleleSUM  log2_alleleSUM
+# gene_name
+# BRCA2      845  3752  638  5005      10240       13.321928
+# BRCA1      805  2554  462  4065       7886       12.945078
+# COL7A1     128  2895  287   645       3955       11.949462
+# FANCA      251  2013  430   933       3627       11.824561
+# PALB2      119  1305  390  1246       3060       11.579316
+# ...        ...   ...  ...   ...        ...             ...
+# HLA-DQA1     4     4    1     4         13        3.700440
+# MT-TM        6     1    3     3         13        3.700440
+# MT-TP        6     2    2     2         12        3.584963
+# HLA-DQB1     2     4    1     4         11        3.459432
+# MT-RNR2      0     1    1     3          5        2.321928
+# [199 rows x 6 columns]
+
+
+## Barplot (PNG)
+ax = sns.barplot(data=log2df_sorted_byLOG2, x='gene_name', y='log2_alleleSUM', color='#29386F')
+ax.set_xticklabels(ax.get_xticklabels(), ha="right")
+plt.xlabel('gene name\n(n = 199 loci)')
+plt.ylabel('log2-transformation of total allele counts\n(B+LB+LP+P)')
+plt.xticks(fontsize=8, rotation=45)  # Rotate labels by 45 degrees, set font to 8
+plt.xticks(range(0, len(genes), 6))  # Show every 6th label (POLG visible)
+plt.yticks(fontsize=8)
+plt.subplots_adjust(bottom=0.2, left=0.114, right=0.945, top=0.802)  # Adjust the value as needed
+plt.savefig('log2barplot.png')
+# plt.show()
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+
+## Barplot (SVG)
+ax = sns.barplot(data=log2df_sorted_byLOG2, x='gene_name', y='log2_alleleSUM', color='#29386F')
+ax.set_xticklabels(ax.get_xticklabels(), ha="right")
+plt.xlabel('gene name\n(n = 199 loci)')
+plt.ylabel('log2-transformation of total allele counts\n(B+LB+LP+P)')
+plt.xticks(fontsize=8, rotation=45)  # Rotate labels by 45 degrees, set font to 8
+plt.xticks(range(0, len(genes), 6))  # Show every 6th label (POLG visible)
+plt.yticks(fontsize=8)
+plt.subplots_adjust(bottom=0.2, left=0.114, right=0.945, top=0.802)  # Adjust the value as needed
+plt.savefig('log2barplot.svg')
+# plt.show()
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+
+
+
+
+########################################################### step 4: histogram plots of log2-transformed total allele counts (B+LB+LP+P)
+
+    # 4. Histogram (10% bin sizes) of total allele counts (B+LB+LP+P)
+
+## Histogram (PNG)
+ax = sns.histplot(data=log2df_sorted_byLOG2, x="log2_alleleSUM", bins = 10, color='#802A2A', alpha=0.92)
+plt.xlabel('ten percentile bins of log2-transformed allele sums', fontsize=10)
+plt.ylabel('gene count', fontsize=10)
+plt.savefig('log2histogram.png')
+# plt.show()
+plt.clf()
+plt.cla()
+plt.close()
+
+## Histogram (SVG)
+ax = sns.histplot(data=log2df_sorted_byLOG2, x="log2_alleleSUM", bins = 10, color='#802A2A', alpha=0.92)
+plt.xlabel('ten percentile bins of log2-transformed allele sums', fontsize=10)
+plt.ylabel('gene count', fontsize=10)
+plt.savefig('log2histogram.svg')
+# plt.show()
+plt.clf()
+plt.cla()
+plt.close()
+
+
+########################################################### step 5: PIE chart showing top20 genes for total allele counts (B+LB+LP+P)
+
+    # 5. PIE chart of genes sorted by total allele number (with top20 genes as a 10% slice)
+
+## Of 199 anemia-enriched loci, let's display the top20 genes sorted by total allele counts (B+LB+LP+P).  Top20 = ~10% of the 199 loci.
+
+# Let's create a dictionary relating categorical labels to %
+data = {'category': ['top 20 genes', ''], 'values': [10, 90]}
+# Initialize a pd df using this simple dictionary
+df = pd.DataFrame(data)
+# View the pd df
+df
+  # category  values
+# 0        A      10
+# 1        B      90
+# set colors
+colorNames = ['black',   'grey',    'blue',    'light blue',  'red',      'light red',  'green',   'light green']
+colors = [    '#363636', '#E5E5E5', '#29386F', '#DFEDFA',     '#802A2A',  '#FCE5EA',    '#44A043',  '#E0F4DA']
+# declaring exploding pie 
+explode = [0.15, 0]
+
+## Get PNG
+# Set Seaborn style
+sns.set_theme()
+sns.set_style("whitegrid")
+# Create pie chart
+plt.figure(figsize=(9, 6))
+plt.pie(df['values'], labels=df['category'], explode=explode, autopct='%1.1f%%', startangle = 345, pctdistance=1.15, labeldistance=1.5, colors=colors)
+plt.title('Genes sorted by total allele number')
+plt.tight_layout()
+# plt.show()
+plt.savefig('pieTop20rawCounts.png')
+# Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+
+## Get SVG
+# Set Seaborn style
+sns.set_theme()
+sns.set_style("whitegrid")
+# Create pie chart
+plt.figure(figsize=(9, 6))
+plt.pie(df['values'], labels=df['category'], explode=explode, autopct='%1.1f%%', startangle = 345, pctdistance=1.15, labeldistance=1.5, colors=colors)
+plt.title('Genes sorted by total allele number')
+plt.tight_layout()
+# plt.show()
+plt.savefig('pieTop20rawCounts.svg')
+# Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+
+
+### CUSTOM COLOR PALETTE:
+# COLOR	        FILL
+# black	        #363636
+# grey	        #E5E5E5
+# blue	        #29386F
+# light blue	#DFEDFA
+# red	        #802A2A
+# light red	    #FCE5EA
+# green	        #44A043
+# light green	#E0F4DA
+
+########################################################### step 6: Horizontal bar chart showing  sorted list of genes by top allele counts (descending sort).
+
+    # 6. Horizontal bar chart showing the sorted list of genes by top allele counts (descending sort).
+        #   For each gene, raw number of each of 4 ClinVar categories: B, LB, LP, P.  Follow this color schema:
+                #   CATEGORY: Benign                (dark blue)     #29386F
+                #   CATEGORY: Likely benign         (light blue)    #DFEDFA
+                #   CATEGORY: Likely pathogenic     (light red)     #FCE5EA
+                #   CATEGORY: Pathogenic            (dark red)      #802A2A     
+
+
+# Slice the top20 loci from the sorted log2df, and store in a pd variable
+top20byAlleleCount = log2df_sorted_byLOG2[0:20]
+topBvals = top20byAlleleCount['B'].tolist()
+topLBvals = top20byAlleleCount['LB'].tolist()
+topLPvals = top20byAlleleCount['LP'].tolist()
+topPvals = top20byAlleleCount['P'].tolist()
+topGeneNames = top20byAlleleCount.index        # index = gene names
+
+df = pd.DataFrame()
+df['gene_name'] = topGeneNames
+df['B'] = topBvals
+df['LB'] = topLBvals
+df['LP'] = topLPvals
+df['P'] = topPvals
+
+
+############################################################# Left off here!
+
+
+
+####################################################################################################################################################################################
+# https://stackoverflow.com/questions/61740434/how-to-make-horizontal-bar-chart-using-seaborn-to-be-stacked-to-a-100-by-hue-pa
+
+df['pct'] = df['Count'] / sum(df['Count'])
+
+df.pivot(index=topGeneNames,columns='Count',
+         values='pct').plot(kind='barh',stacked=True,colormap='Blues',rot=90) 
+
+
+####################################################################################################################################################################################
+
+## Barplot (PNG)
+ax = sns.barplot(data=df, y='gene_name', color='#29386F')
+ax.set_xticklabels(ax.get_xticklabels(), ha="right")
+plt.xlabel('gene name\n(n = 199 loci)')
+plt.ylabel('log2-transformation of total allele counts\n(B+LB+LP+P)')
+plt.xticks(fontsize=8, rotation=45)  # Rotate labels by 45 degrees, set font to 8
+plt.xticks(range(0, len(genes), 6))  # Show every 6th label (POLG visible)
+plt.yticks(fontsize=8)
+plt.subplots_adjust(bottom=0.2, left=0.114, right=0.945, top=0.802)  # Adjust the value as needed
+# plt.savefig('log2barplot.png')
+plt.show()
+## Clear plot space
+# plt.clf()
+# plt.cla()
+# plt.close()
+
+
+
+
+
+########################################################### step 7: PIE chart showing top20 genes for allele freqs (LP+P)
+
+    # 7. PIE chart of genes sorted by problematic allele frequencies (with top20 genes as a 10% slice)
+
+## Of 199 anemia-enriched loci, let's display the top20 genes sorted by total allele counts (LP+P).  Top20 = ~10% of the 199 loci.
+
+# Let's create a dictionary relating categorical labels to %
+data = {'category': ['top 20 genes', ''], 'values': [10, 90]}
+# Initialize a pd df using this simple dictionary
+df = pd.DataFrame(data)
+# View the pd df
+df
+  # category  values
+# 0        A      10
+# 1        B      90
+
+# set colors
+colorNames = ['grey',   'black',    'blue',    'light blue',  'red',      'light red',  'green',   'light green']
+colors = [    '#E5E5E5', '#363636', '#29386F', '#DFEDFA',     '#802A2A',  '#FCE5EA',    '#44A043',  '#E0F4DA']
+# declaring exploding pie 
+explode = [0.15, 0]
+
+## Get PNG
+# Set Seaborn style
+sns.set_theme()
+sns.set_style("whitegrid")
+# Create pie chart
+plt.figure(figsize=(9, 6))
+plt.pie(df['values'], labels=df['category'], explode=explode, autopct='%1.1f%%', startangle = 165, pctdistance=1.15, labeldistance=1.5, colors=colors)
+plt.title('Genes sorted by problematic allele frequencies')
+plt.tight_layout()
+# plt.show()
+plt.savefig('pieTop20normFreqs.png')
+# Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+
+## Get SVG
+# Set Seaborn style
+sns.set_theme()
+sns.set_style("whitegrid")
+# Create pie chart
+plt.figure(figsize=(9, 6))
+plt.pie(df['values'], labels=df['category'], explode=explode, autopct='%1.1f%%', startangle = 165, pctdistance=1.15, labeldistance=1.5, colors=colors)
+plt.title('Genes sorted by problematic allele frequencies')
+plt.tight_layout()
+# plt.show()
+plt.savefig('pieTop20normFreqs.svg')
+# Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+
+### CUSTOM COLOR PALETTE:
+# COLOR	        FILL
+# black	        #363636
+# grey	        #E5E5E5
+# blue	        #29386F
+# light blue	#DFEDFA
+# red	        #802A2A
+# light red	    #FCE5EA
+# green	        #44A043
+# light green	#E0F4DA
 
 
 
@@ -211,6 +573,12 @@ dfAlleleFreqs.to_csv('anemia_ClinVar_B_LB_LP_P_categorical_allele_freqs.csv')
 
 
 
+
+
+
+
+
+############################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################
 
 
 
