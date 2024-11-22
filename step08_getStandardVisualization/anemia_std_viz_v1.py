@@ -51,32 +51,6 @@
 
 
 
-######################## LEFT OFF HERE
-
-
-
-
-
-
-
-
-
-
-
-
-
-# The output of this script follows this general MVS sequence.  PNG/SVG plots are written to working directory:
-    # 1. Seaborn pairplot analyses of all 6 ClinVar categories graphed against one another
-    # 2. t-SNE dimensional reduction
-    # 3. Linear Regression / correlation coefficient analyses
-    # 4. PCA
-    # 5. PCA explained variance ratio
-    # 6. PCA explained variance ratios as accumulated SUMS
-    # 7. PCA component ruleset definitions
-    # 8. k-means clustering
-    # 9. 2-PC_k-means_clustering
-        
-
 ### 1SHOT: BASH code to setup VENV pocket for vPCA:
 # python3 -m venv vPCA
 # source vPCA/bin/activate
@@ -92,7 +66,7 @@
 ### After VENV vPCA construciton, upon WSL bootup:
 source gotovenv.sh
 source vPCA/bin/activate
-cd anemia/mvs/loci_199
+cd /mnt/c/wslshare/github/inherited_anemias/step08_getStandardVisualization
 python
 
 ############################################################ IMPORTS
@@ -100,16 +74,145 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.manifold import TSNE
+# from sklearn.manifold import TSNE
 
 # LOAD DATA
 alleles_df = pd.DataFrame()
 alleles_df = pd.read_csv('Anemia_199_genes_AlleleCount_4_ClinVar_classifiers.csv')
+# Extract columns into list variables:
+genes = alleles_df['gene_name'].tolist() 
+rawBalleles = alleles_df['B'].tolist() 
+rawLBalleles = alleles_df['LB'].tolist() 
+rawLPalleles = alleles_df['LP'].tolist() 
+rawPalleles = alleles_df['P'].tolist() 
+
 # Pull out numeric only columns (remove the 'gene_name' column)
-non_numeric = ['gene_name']
-numeric_alleles_df = alleles_df.drop(non_numeric, axis=1)
+# non_numeric = ['gene_name']
+# numeric_alleles_df = alleles_df.drop(non_numeric, axis=1)
 
 ###########################################################
+
+# Create raw allele counts file (CSV):
+        # 1. A raw allele counts (CSV) file that contains the following columns: 
+        #   # (an index column)
+        #   Gene name
+        #   CATEGORY: Benign                (dark blue)     #29386F
+        #   CATEGORY: Likely benign         (light blue)    #DFEDFA
+        #   CATEGORY: Likely pathogenic     (light red)     #FCE5EA
+        #   CATEGORY: Pathogenic            (dark red)      #802A2A
+        #   Allele SUM
+        #   Log2 of Allele SUM
+
+
+# Use pd.sum function to calculate rowSUMS
+alleles_df['alleleSUM'] = alleles_df.sum(axis=1, numeric_only=True)
+# Generate a listvar that tracks allele SUMS per locus:
+alleleSUMS = alleles_df['alleleSUM'].tolist()       # INT type list
+# Preview df
+alleles_df
+    # gene_name    B    LB   LP    P  alleleSUM
+# 0       ABCA1  250   580   18   71        919
+# 1       ABCG8   81   202   24   45        352
+# 2      ACVRL1   94   191  168  373        826
+# 3        ADA2   44   150   31  121        346
+# 4        ALG8   71    86   20   32        209
+# ..        ...  ...   ...  ...  ...        ...
+# 194     MT-TV    5     5    4    3         17
+# 195   MT-RNR1   28    34    3    3         68
+# 196   MT-RNR2    0     1    1    3          5
+# 197      POLG  125  1049  180  246       1600
+# 198     POLG2   25   129    7   28        189
+# [199 rows x 6 columns]
+
+# Write to disk (CSV file)
+alleles_df = alleles_df.set_index('gene_name')
+alleles_df.to_csv('anemia_ClinVar_B_LB_LP_P_raw_allele_counts.csv')
+
+
+
+###########################################################
+
+# Create transformed categorical allele frequencies file (CSV):
+    # 2. A frequency-normalized allele counts (CSV) file that contains the following columns.  Allele frequencies are calculated on a per-locus basis.
+        #   # (an index column)
+        #   Gene name
+        #   B.freq                          (dark blue)     #29386F
+        #   LB.freq                         (light blue)    #DFEDFA
+        #   LP.freq                         (light red)     #FCE5EA
+        #   P.freq                          (dark red)      #802A2A
+        #   SUM of categorical allele freqs
+
+## Loop over list of genes
+    ## Fetch a gene
+        ## Fetch raw counts of B, LB, LP, and P alleles
+        ## Fetch the alleleSUM for current gene
+        ## Normalize B, LB, LP, and P to arrive at categorical allele frequencies
+
+## Useful listvars:
+genes           # str elems
+rawBalleles         # INT
+rawLBalleles        # INT
+rawLPalleles        # INT
+rawPalleles         # INT
+alleleSUMS          # INT
+
+len(genes)  # 199 loci
+i = 0
+
+## Accumulator listvars to store a list of float elements:
+freqBalleles = []         # floats
+freqLBalleles = []        # floats
+freqLPalleles = []        # floats
+freqPalleles = []         # floats
+
+for i in range(len(genes)):
+    # get first gene in list
+    gene = genes[i]
+    # get raw allele counts (numerators)
+    rawB = rawBalleles[i]
+    rawLB = rawLBalleles[i]
+    rawLP = rawLPalleles[i]
+    rawP = rawPalleles[i]
+    # get denominator (total allele counts across 4 ClinVar categories: B, LB, LP, and P)
+    denom = alleleSUMS[i]
+    # Append normalized frequences as float elements to accumulator listvars
+    freqBalleles.append(rawB/denom)
+    freqLBalleles.append(rawLB/denom)
+    freqLPalleles.append(rawLP/denom)
+    freqPalleles.append(rawP/denom)
+
+# Create a new dataframe to capture categorical allele frequencies    
+dfAlleleFreqs = pd.DataFrame()
+# Write columns to pandas dataframe:
+dfAlleleFreqs['gene_name'] = genes
+dfAlleleFreqs['B.freq'] = freqBalleles
+dfAlleleFreqs['LB.freq'] = freqLBalleles
+dfAlleleFreqs['LP.freq'] = freqLPalleles
+dfAlleleFreqs['P.freq'] = freqPalleles
+# QC step to ensure that allele frequency SUMS each equal to 1.0
+# Use pd.sum function to calculate rowSUMS
+dfAlleleFreqs['alleleFreqSUM'] = dfAlleleFreqs.sum(axis=1, numeric_only=True)
+# Set index to gene_name
+dfAlleleFreqs = dfAlleleFreqs.set_index('gene_name')
+# Write pd to disk
+dfAlleleFreqs.to_csv('anemia_ClinVar_B_LB_LP_P_categorical_allele_freqs.csv')
+
+
+
+################## LEFT OFF HERE
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 alleles_df.shape
