@@ -32,7 +32,7 @@ As the original scrape captured two mtDNA loci (i.e., MT-TN and MT-TS1), we want
 
 **STEP 7: Perform multivariate statistical analyses on ClinVar allele categorical distributions**
 
-Across all 199 anemia-enriched genetic loci, we scraped 192,296 total alleles from each of six NCBI ClinVar categories (i.e., CC, B, LB, US, LP, and P). We performed multivariate statistical analyses, including pairplots, t-SNE, linear regressions, correlation coefficients, principal component analysis (PCA), PCA explaind variance ratios, unfiltered k-means clustering, and two-component (2PC) k-means clustering.
+Across all 199 anemia-enriched genetic loci, we scraped 192,296 unique alleles from each of six NCBI ClinVar categories (i.e., CC, B, LB, US, LP, and P). We removed alleles in the CC and US categories, to arrive at a dataset of 199 loci made up of 112,534 raw allele counts across four NCBI ClinVar categories (i.e., B, LB, LP, and P).  We next visualized our 112K allelic dataset by performing multivariate statistical analyses, including pairplots, t-SNE, linear regressions, correlation coefficients, principal component analysis (PCA), PCA explained variance ratios, unfiltered k-means clustering, and two-component (2PC) k-means clustering.
 
 **STEP 8: Perform standard visualization analyses on ClinVar allele categorical distributions**
 
