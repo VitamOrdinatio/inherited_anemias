@@ -1,16 +1,14 @@
 ## The following python script performs multivariate statistics (MVS) when given a ClinVar raw allele counts table as a CSV file in this format:
     # n rows where n = total gene number
-    # 7 columns with labels: gene_name   CC    B   LB   US   LP    P
-        # CC = conflicting classifications
+    # 5 columns with labels: gene_name   B   LB   LP    P
         # B = benign
         # LB = likely benign
-        # US = uncertain signficance
         # LP = likely pathogenic
         # P = pathogenic
     # NOTA BENE: The CSV file must contain the original allele counts (that are not normalized frequencies).
 
 # The output of this script follows this general MVS sequence.  PNG/SVG plots are written to working directory:
-    # 1. Seaborn pairplot analyses of all 6 ClinVar categories graphed against one another
+    # 1. Seaborn pairplot analyses of all 4 ClinVar categories graphed against one another
     # 2. t-SNE dimensional reduction
     # 3. Linear Regression / correlation coefficient analyses
     # 4. PCA
@@ -36,7 +34,7 @@
 ### After VENV vPCA construciton, upon WSL bootup:
 source gotovenv.sh
 source vPCA/bin/activate
-cd anemia/mvs/loci_199
+cd /mnt/c/wslshare/github/inherited_anemias/step07_getMultivariateStats
 python
 
 ############################################################ IMPORTS
@@ -47,8 +45,8 @@ import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 
 # LOAD DATA
-alleles_df = pd.DataFrame()
-alleles_df = pd.read_csv('Anemia_199_genes_AlleleCount_6_ClinVar_classifiers.csv')
+alleles_df = pd.DataFrame()                             # Note: alleles_df will never be sorted
+alleles_df = pd.read_csv('./in/Anemia_199_genes_AlleleCount_4_ClinVar_classifiers.csv')
 # Pull out numeric only columns (remove the 'gene_name' column)
 non_numeric = ['gene_name']
 numeric_alleles_df = alleles_df.drop(non_numeric, axis=1)
@@ -57,60 +55,53 @@ numeric_alleles_df = alleles_df.drop(non_numeric, axis=1)
 
 
 alleles_df.shape
-# (199, 7)                    # returns a tuple which means the df has 199 rows and 7 columns
+# (199, 5)                    # returns a tuple which means the df has 199 rows and 5 columns
 
 alleles_df.head()              # view just the first five genes of 199 genes
-  # gene_name   CC    B   LB   US   LP    P
-# 0     ABCA1  113  250  580  467   18   71
-# 1     ABCG8   85   81  202  358   24   45
-# 2    ACVRL1   52   94  191  208  168  373
-# 3      ADA2   14   44  150  242   31  121
-# 4      ALG8   18   71   86  127   20   32
+  # gene_name    B   LB   LP    P
+# 0     ABCA1  250  580   18   71
+# 1     ABCG8   81  202   24   45
+# 2    ACVRL1   94  191  168  373
+# 3      ADA2   44  150   31  121
+# 4      ALG8   71   86   20   32
 
 alleles_df.describe()
 # returns simple stats analysis:
-                # CC           B           LB           US          LP            P
-# count   199.000000  199.000000   199.000000   199.000000  199.000000   199.000000
-# mean     79.407035   62.055276   289.552764   321.407035   54.994975   158.894472
-# std     411.702661   97.449712   481.069102   528.190890   94.265770   474.646486
-# min       0.000000    0.000000     1.000000     4.000000    0.000000     1.000000
-# 25%       1.500000   18.000000    30.500000    50.500000    5.000000    18.000000
-# 50%      16.000000   38.000000   130.000000   156.000000   18.000000    48.000000
-# 75%      47.000000   69.000000   360.000000   330.000000   62.500000   139.000000
-# max    5092.000000  845.000000  3752.000000  3970.000000  638.000000  5005.000000
+                # B           LB          LP            P
+# count  199.000000   199.000000  199.000000   199.000000
+# mean    62.055276   289.552764   54.994975   158.894472
+# std     97.449712   481.069102   94.265770   474.646486
+# min      0.000000     1.000000    0.000000     1.000000
+# 25%     18.000000    30.500000    5.000000    18.000000
+# 50%     38.000000   130.000000   18.000000    48.000000
+# 75%     69.000000   360.000000   62.500000   139.000000
+# max    845.000000  3752.000000  638.000000  5005.000000
 
 alleles_df.loc[0]   # gets first of 199 genes
 # gene_name    ABCA1
-# CC             113
 # B              250
 # LB             580
-# US             467
 # LP              18
 # P               71
 # Name: 0, dtype: object
 
 alleles_df.loc[1]   # gets second of 199 genes
 # gene_name    ABCG8
-# CC              85
 # B               81
 # LB             202
-# US             358
 # LP              24
 # P               45
 # Name: 1, dtype: object
 
 alleles_df.loc[1][1]
-# np.int64(85)                  # 85 alleles of this categorical type
-alleles_df.loc[1][2]
 # np.int64(81)                  # 81 alleles of this categorical type
+alleles_df.loc[1][2]
+# np.int64(202)                  # 202 alleles of this categorical type
 alleles_df.loc[1][3]
-# np.int64(202)                 # 202 alleles of this categorical type
+# np.int64(24)                 # 24 alleles of this categorical type
 alleles_df.loc[1][4]
-# np.int64(358)                 # 358 alleles of this categorical type
-alleles_df.loc[1][5]
-# np.int64(24)                  # 24 alleles of this categorical type
-alleles_df.loc[1][6]
-# np.int64(45)                  # 45 alleles of this categorical type
+# np.int64(45)                 # 45 alleles of this categorical type
+
 
 ############################################################ NUMERIC DF INITALIZIATION
 # Pull out numeric only columns (remove the 'gene_name' column)
@@ -118,25 +109,25 @@ alleles_df.loc[1][6]
 # numeric_alleles_df = alleles_df.drop(non_numeric, axis=1)
 
 numeric_alleles_df.shape
-# (199, 6)
+# (199, 4)
 numeric_alleles_df.head()
-    # CC    B   LB   US   LP    P
-# 0  113  250  580  467   18   71
-# 1   85   81  202  358   24   45
-# 2   52   94  191  208  168  373
-# 3   14   44  150  242   31  121
-# 4   18   71   86  127   20   32
+     # B   LB   LP    P
+# 0  250  580   18   71
+# 1   81  202   24   45
+# 2   94  191  168  373
+# 3   44  150   31  121
+# 4   71   86   20   32
 
 numeric_alleles_df.describe()
-                # CC           B           LB           US          LP            P
-# count   199.000000  199.000000   199.000000   199.000000  199.000000   199.000000
-# mean     79.407035   62.055276   289.552764   321.407035   54.994975   158.894472
-# std     411.702661   97.449712   481.069102   528.190890   94.265770   474.646486
-# min       0.000000    0.000000     1.000000     4.000000    0.000000     1.000000
-# 25%       1.500000   18.000000    30.500000    50.500000    5.000000    18.000000
-# 50%      16.000000   38.000000   130.000000   156.000000   18.000000    48.000000
-# 75%      47.000000   69.000000   360.000000   330.000000   62.500000   139.000000
-# max    5092.000000  845.000000  3752.000000  3970.000000  638.000000  5005.000000
+                # B           LB          LP            P
+# count  199.000000   199.000000  199.000000   199.000000
+# mean    62.055276   289.552764   54.994975   158.894472
+# std     97.449712   481.069102   94.265770   474.646486
+# min      0.000000     1.000000    0.000000     1.000000
+# 25%     18.000000    30.500000    5.000000    18.000000
+# 50%     38.000000   130.000000   18.000000    48.000000
+# 75%     69.000000   360.000000   62.500000   139.000000
+# max    845.000000  3752.000000  638.000000  5005.000000
 
 ############################################################ SNS PAIRPLOT
 ## Run seaborn's pairplot analysis
@@ -146,17 +137,20 @@ numeric_alleles_df.describe()
 ## View the plot from memory
 
 # Run seaborn's pairplot analysis
+
+# get an SVG version
 sns.pairplot(numeric_alleles_df, diag_kind ='hist')
 # Make sure on Win11/WSL2 to first run XLaunch, and ensure that 'disable access controls' is toggled ON in last menu dialog
 # SAVE the pairplot to file system
-plt.savefig('raw_pairplot.svg')
+plt.savefig('./out/raw_pairplot.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
+
 # get a PNG version
 sns.pairplot(numeric_alleles_df, diag_kind ='hist')
-plt.savefig('raw_pairplot.png')
+plt.savefig('./out/raw_pairplot.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
@@ -167,11 +161,11 @@ plt.close()
 m = TSNE(learning_rate=50)
 tsne_features = m.fit_transform(numeric_alleles_df)
 len(tsne_features)
-# 164
+# 199
 tsne_features[1:4,:]
-# array([[ 2.0416634 ,  2.980683  ],
-       # [ 0.77361345, -3.9859142 ],
-       # [-0.25464657,  1.362818  ]], dtype=float32)
+# array([[ 0.34670743, -3.937564  ],
+       # [-1.6433936 , -9.3039665 ],
+       # [ 2.637077  , -2.3393624 ]], dtype=float32)
 # Initialize tsne df
 tsne_df = pd.DataFrame()
 # Transfer tsne output into tsne df
@@ -179,9 +173,11 @@ tsne_df['x'] = tsne_features[:,0]
 tsne_df['y'] = tsne_features[:,1]
 
 # Setup an sns scatterplot to visualize tsne analysis
+
+# get an SVG version
 sns.scatterplot( x="x", y="y", data=tsne_df )
 # sns.scatterplot( x="x", y="y", hue="y", palette=sns.color_palette("hls", 10), data=tsne_df, legend="full", alpha=0.3 )
-plt.savefig('TSNE_scatterplot.svg')
+plt.savefig('./out/TSNE_scatterplot.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
@@ -189,27 +185,31 @@ plt.close()
 
 # get a PNG version
 sns.scatterplot( x="x", y="y", data=tsne_df )
-plt.savefig('TSNE_scatterplot.png')
+plt.savefig('./out/TSNE_scatterplot.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 
 tsne_df.var()
-# x    72.292007
-# y     7.238809
+# x     11.904635
+# y    110.879532
 # dtype: float32
-# Boxplot
+
+# Boxplots
+
+# get an SVG version
 sns.boxplot(tsne_df)
 # plt.show()
-plt.savefig('TSNE_boxplot.svg')
+plt.savefig('./out/TSNE_boxplot.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
+
 # get a PNG version
 sns.boxplot(tsne_df)
-plt.savefig('TSNE_boxplot.png')
+plt.savefig('./out/TSNE_boxplot.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
@@ -226,56 +226,51 @@ plt.close()
 ## Goal: remove dimensions that exhibit close to -1 or +1 correlation coefficients (r).  This reduces the risk of overfitting a model, while minimizing loss of complexity to the original dataset.
 
 numeric_alleles_df.corr()
-          # CC         B        LB        US        LP         P
-# CC  1.000000  0.819468  0.717500  0.676335  0.626177  0.947301
-# B   0.819468  1.000000  0.792313  0.718777  0.673274  0.834417
-# LB  0.717500  0.792313  1.000000  0.866518  0.797543  0.762214
-# US  0.676335  0.718777  0.866518  1.000000  0.736070  0.697099
-# LP  0.626177  0.673274  0.797543  0.736070  1.000000  0.756673
-# P   0.947301  0.834417  0.762214  0.697099  0.756673  1.000000
+           # B        LB        LP         P
+# B   1.000000  0.792313  0.673274  0.834417
+# LB  0.792313  1.000000  0.797543  0.762214
+# LP  0.673274  0.797543  1.000000  0.756673
+# P   0.834417  0.762214  0.756673  1.000000
+
+## Heatmaps of linear regressions
+
+# get an SVG version
 cmap = sns.diverging_palette ( h_neg=10, h_pos=240, as_cmap=True)
 sns.heatmap(numeric_alleles_df.corr(), center=0, cmap=cmap, linewidths=1, annot=True, fmt=".2f")
-plt.savefig('Correlation_heatmap.svg')
+plt.savefig('./out/Correlation_heatmap.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 
 # get a PNG version
-numeric_alleles_df.corr()
-          # CC         B        LB        US        LP         P
-# CC  1.000000  0.819468  0.717500  0.676335  0.626177  0.947301
-# B   0.819468  1.000000  0.792313  0.718777  0.673274  0.834417
-# LB  0.717500  0.792313  1.000000  0.866518  0.797543  0.762214
-# US  0.676335  0.718777  0.866518  1.000000  0.736070  0.697099
-# LP  0.626177  0.673274  0.797543  0.736070  1.000000  0.756673
-# P   0.947301  0.834417  0.762214  0.697099  0.756673  1.000000
 cmap = sns.diverging_palette ( h_neg=10, h_pos=240, as_cmap=True)
 sns.heatmap(numeric_alleles_df.corr(), center=0, cmap=cmap, linewidths=1, annot=True, fmt=".2f")
-plt.savefig('Correlation_heatmap.png')
+plt.savefig('./out/Correlation_heatmap.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 
 # create a MASK to remove the upper triangle
+
+# get an SVG version
 corr = numeric_alleles_df.corr()
 mask = np.triu( np.ones_like(corr, dtype = bool) )
 cmap = sns.diverging_palette ( h_neg=10, h_pos=240, as_cmap=True)
 sns.heatmap(numeric_alleles_df.corr(), mask=mask, center=0, cmap=cmap, linewidths=1, annot=True, fmt=".2f")
-plt.savefig('Correlation_heatmap_LT.svg')
+plt.savefig('./out/Correlation_heatmap_LT.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 
 # get a PNG version
-# create a MASK to remove the upper triangle
 corr = numeric_alleles_df.corr()
 mask = np.triu( np.ones_like(corr, dtype = bool) )
 cmap = sns.diverging_palette ( h_neg=10, h_pos=240, as_cmap=True)
 sns.heatmap(numeric_alleles_df.corr(), mask=mask, center=0, cmap=cmap, linewidths=1, annot=True, fmt=".2f")
-plt.savefig('Correlation_heatmap_LT.png')
+plt.savefig('./out/Correlation_heatmap_LT.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
@@ -291,21 +286,21 @@ numeric_alleles_df_std = pd.DataFrame(scaler.fit_transform(numeric_alleles_df),c
 
 # View the fit/transformation using the elected scaler:
 numeric_alleles_df_std.head()
-         # CC         B        LB        US        LP         P
-# 0  0.081801  1.933497  0.605276  0.276340 -0.393444 -0.185646
-# 1  0.013619  0.194895 -0.182455  0.069455 -0.329633 -0.240562
-# 2 -0.066738  0.328634 -0.205379 -0.215250  1.201815  0.452222
-# 3 -0.159270 -0.185745 -0.290820 -0.150717 -0.255188 -0.080039
-# 4 -0.149530  0.092020 -0.424193 -0.368990 -0.372174 -0.268019
+          # B        LB        LP         P
+# 0  1.933497  0.605276 -0.393444 -0.185646
+# 1  0.194895 -0.182455 -0.329633 -0.240562
+# 2  0.328634 -0.205379  1.201815  0.452222
+# 3 -0.185745 -0.290820 -0.255188 -0.080039
+# 4  0.092020 -0.424193 -0.372174 -0.268019
 
 ## compare with original (pre-fit/transform), which represent raw allele counts:
 numeric_alleles_df.head()
-    # CC    B   LB   US   LP    P
-# 0  113  250  580  467   18   71
-# 1   85   81  202  358   24   45
-# 2   52   94  191  208  168  373
-# 3   14   44  150  242   31  121
-# 4   18   71   86  127   20   32
+     # B   LB   LP    P
+# 0  250  580   18   71
+# 1   81  202   24   45
+# 2   94  191  168  373
+# 3   44  150   31  121
+# 4   71   86   20   32
 
 # Bring in PCA tools:
 from sklearn.decomposition import PCA
@@ -316,26 +311,168 @@ pca = PCA()
 # Fit the standardized dataset to perform PCA:
 pca.fit(numeric_alleles_df_std)
 
+pcaDF = pd.DataFrame()
+pcaDF['PC'] = ['PC1','PC2','PC3','PC4']
+
 # Get the PCA explained variance ratio
 print(pca.explained_variance_ratio_)
 # This tells me individual PC contributions to the overall PCA.  Usually the first 2-3 components contain most of dataset variance
-# [0.8018952  0.09095647 0.05025481 0.03302067 0.01863209 0.00524076]
+# [0.82726659 0.0863436  0.0555871  0.03080271]
+#   PC1         PC2         PC3         PC4
+
+i = 0
+ExpVarianceRatios = []      # float list
+
+for i in range(len(pca.explained_variance_ratio_)):
+    ExpVarianceRatios.append(float(pca.explained_variance_ratio_[i]))
+
+pcaDF['ExpVarRatios'] = ExpVarianceRatios
+pcaDF = pcaDF.set_index('PC')
+pcaDF.to_csv('./out/PCA_explained_variance_ratio.csv')
+
+        #   Gene name
+        #   CATEGORY: Benign                (dark blue)     #29386F
+        #   CATEGORY: Likely benign         (light blue)    #DFEDFA
+        #   CATEGORY: Likely pathogenic     (light red)     #FCE5EA
+        #   CATEGORY: Pathogenic            (dark red)      #802A2A
+        
+
+
+## Barplot (PNG)
+ax = sns.barplot(data=pcaDF, x='PC', y='ExpVarRatios', color='#29386F')
+ax.set_xticklabels(ax.get_xticklabels(), ha="right")
+plt.xlabel('principal component')
+plt.ylabel('explained variance ratio')
+plt.xticks(fontsize=8, rotation=45)  # Rotate labels by 45 degrees, set font to 8
+plt.yticks(fontsize=8)
+plt.subplots_adjust(bottom=0.2, left=0.114, right=0.945, top=0.802)  # Adjust the value as needed
+plt.savefig('./out/PCA_expVARIANCEratio.png')
+# plt.show()
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+
+## Barplot (SVG)
+ax = sns.barplot(data=pcaDF, x='PC', y='ExpVarRatios', color='#29386F')
+ax.set_xticklabels(ax.get_xticklabels(), ha="right")
+plt.xlabel('principal component')
+plt.ylabel('explained variance ratio')
+plt.xticks(fontsize=8, rotation=45)  # Rotate labels by 45 degrees, set font to 8
+plt.yticks(fontsize=8)
+plt.subplots_adjust(bottom=0.2, left=0.114, right=0.945, top=0.802)  # Adjust the value as needed
+plt.savefig('./out/PCA_expVARIANCEratio.svg')
+# plt.show()
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+
+############## work on PCA explained variance ratio CUMULATIVE SUMS:
 
 # Get the accumulated PCA explaind variance ratio
 print(pca.explained_variance_ratio_.cumsum())
 # [0.8018952  0.89285166 0.94310647 0.97612715 0.99475924 1.        ]
 ## This tells me that 94.2% of the data is explained by the first 3 PCs of PCA
 
+    
+pcaDF = pd.DataFrame()
+pcaDF['PC_range'] = ['PC1','PC1-PC2','PC1-PC3','PC1-PC4']
+
+# Get the PCA explained variance ratio
+print(pca.explained_variance_ratio_.cumsum())
+# This tells me individual PC contributions to the overall PCA.  Usually the first 2-3 components contain most of dataset variance
+# [0.82726659 0.0863436  0.0555871  0.03080271]
+#   PC1         PC2         PC3         PC4
+
+i = 0
+CumSumExpVarianceRatios = []      # float list
+
+for i in range(len(pca.explained_variance_ratio_.cumsum())):
+    CumSumExpVarianceRatios.append(float(pca.explained_variance_ratio_.cumsum()[i]))
+
+pcaDF['ExpVarRatioCumSum'] = CumSumExpVarianceRatios
+pcaDF = pcaDF.set_index('PC_range')
+pcaDF.to_csv('./out/PCA_explained_variance_ratio_CumSum.csv')
+
+        #   Gene name
+        #   CATEGORY: Benign                (dark blue)     #29386F
+        #   CATEGORY: Likely benign         (light blue)    #DFEDFA
+        #   CATEGORY: Likely pathogenic     (light red)     #FCE5EA
+        #   CATEGORY: Pathogenic            (dark red)      #802A2A
+        
+
+
+## Barplot (PNG)
+ax = sns.barplot(data=pcaDF, x='PC_range', y='ExpVarRatioCumSum', color='#29386F')
+ax.set_xticklabels(ax.get_xticklabels(), ha="right")
+plt.xlabel('principal component')
+plt.ylabel('explained variance ratio')
+plt.xticks(fontsize=8, rotation=45)  # Rotate labels by 45 degrees, set font to 8
+plt.yticks(fontsize=8)
+plt.subplots_adjust(bottom=0.2, left=0.114, right=0.945, top=0.802)  # Adjust the value as needed
+plt.savefig('./out/PCA_expVARIANCEratioCUMsum.png')
+# plt.show()
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+
+## Barplot (SVG)
+ax = sns.barplot(data=pcaDF, x='PC_range', y='ExpVarRatioCumSum', color='#29386F')
+ax.set_xticklabels(ax.get_xticklabels(), ha="right")
+plt.xlabel('principal component')
+plt.ylabel('explained variance ratio')
+plt.xticks(fontsize=8, rotation=45)  # Rotate labels by 45 degrees, set font to 8
+plt.yticks(fontsize=8)
+plt.subplots_adjust(bottom=0.2, left=0.114, right=0.945, top=0.802)  # Adjust the value as needed
+plt.savefig('./out/PCA_expVARIANCEratioCUMsum.svg')
+# plt.show()
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+
+
+
+############## work on PCA component ruleset:
+
+pcaDF = pd.DataFrame()
+pcaDF['PC_ruleset'] = ['PC1','PC2','PC3','PC4']
+
 # Get the PCA component ruleset:
 print(pca.components_)
 ## This lists all principal components:
-#       CC              B           LB          US          LP          P           # VARIANCE EXPLANATION BY PRINCIPAL COMPONENTS:
-# PC1 [ 0.40726418  0.41126905  0.41883331  0.39776639  0.3883725   0.42487764]     # All classes contribute relatively equally to the variances
-# PC2 [ 0.54177701  0.24427407 -0.35049018 -0.4475752  -0.4155178   0.38856901]     # CC / P / B are contributing together, inversely to other three classifiers
-# PC3 [-0.02301058 -0.28973272 -0.22238972 -0.47216185  0.75324028  0.27524633]     # LP / P contribute together, inversely to other four classifiers
-# PC4 [-0.3794475   0.77255619  0.11524398 -0.42995786  0.12742098 -0.21164945]     # B / LB / LP contribute together with B as a major driver, inversely to other 3 classifiers
-# PC5 [ 0.08916003 -0.29989775  0.79908674 -0.47638702 -0.18814181  0.03507524]
-# PC6 [-0.62302019 -0.02147484  0.02138479  0.08193396 -0.23980697  0.73939625]
+#       B           LB          LP            P             # VARIANCE EXPLANATION BY PRINCIPAL COMPONENTS:
+# [[ 0.499075    0.50677172  0.48674359  0.50713632]        # equal parts
+ # [-0.59806355  0.20431099  0.71412089 -0.30101223]        # B changes with P
+ # [ 0.19593629  0.70541386 -0.2962713  -0.61337066]        # LP changes with P
+ # [ 0.59569548 -0.45147617  0.40661449 -0.52533877]]       # LB changes with P
+
+
+i = 0
+B_ComponentRuleSet = []      # floats
+LB_ComponentRuleSet = []      # floats
+LP_ComponentRuleSet = []      # floats
+P_ComponentRuleSet = []      # floats
+
+for i in range(len(pca.components_)):
+    B_ComponentRuleSet.append(float(pca.components_[i][0]))
+    LB_ComponentRuleSet.append(float(pca.components_[i][1]))
+    LP_ComponentRuleSet.append(float(pca.components_[i][2]))
+    P_ComponentRuleSet.append(float(pca.components_[i][3]))
+    
+
+
+pcaDF['B.rules'] = B_ComponentRuleSet
+pcaDF['LB.rules'] = LB_ComponentRuleSet
+pcaDF['LP.rules'] = LP_ComponentRuleSet
+pcaDF['P.rules'] = P_ComponentRuleSet
+pcaDF = pcaDF.set_index('PC_ruleset')
+pcaDF.to_csv('./out/PCA_component_rulset.csv')
+
+
+
 
 # Perform PCA in a pipeline
 from sklearn.preprocessing import StandardScaler
@@ -353,379 +490,255 @@ pc = pipe.fit_transform(numeric_alleles_df)
 print(pc[ :, :2 ])
 # Initialize a new pandas dataframe to capture the PC categories
 pc_categories = pd.DataFrame()
-# Populate the pandas dataframe with all six principal components:
+# Populate the pandas dataframe with all four principal components:
 pc_categories['PC1'] = pc[:,0]
 pc_categories['PC2'] = pc[:,1]
 pc_categories['PC3'] = pc[:,2]
 pc_categories['PC4'] = pc[:,3]
-pc_categories['PC5'] = pc[:,4]
-pc_categories['PC6'] = pc[:,5]
 
-############## GET ALL PAIRWISE PCA PC IDENTITY PLOTS    as PNGs           # CONSIDER A LOOP STRUCTURE
-sns.scatterplot(data=pc_categories,y='PC1',x='PC1',alpha=0.4)
-# plt.show()
-plt.savefig('PC1_PC1_scatter.png')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC2',x='PC2',alpha=0.4)
-# plt.show()
-plt.savefig('PC2_PC2_scatter.png')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC3',x='PC3',alpha=0.4)
-# plt.show()
-plt.savefig('PC3_PC3_scatter.png')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC4',x='PC4',alpha=0.4)
-# plt.show()
-plt.savefig('PC4_PC4_scatter.png')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC5',x='PC5',alpha=0.4)
-# plt.show()
-plt.savefig('PC5_PC5_scatter.png')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC6',x='PC6',alpha=0.4)
-# plt.show()
-plt.savefig('PC6_PC6_scatter.png')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
+############## GET ALL PAIRWISE PCA PC PLOTS           # CONSIDER A LOOP STRUCTURE
 
-############## GET ALL PAIRWISE PCA PC IDENTITY PLOTS    as SVGs           # CONSIDER A LOOP STRUCTURE
-sns.scatterplot(data=pc_categories,y='PC1',x='PC1',alpha=0.4)
-# plt.show()
-plt.savefig('PC1_PC1_scatter.svg')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC2',x='PC2',alpha=0.4)
-# plt.show()
-plt.savefig('PC2_PC2_scatter.svg')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC3',x='PC3',alpha=0.4)
-# plt.show()
-plt.savefig('PC3_PC3_scatter.svg')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC4',x='PC4',alpha=0.4)
-# plt.show()
-plt.savefig('PC4_PC4_scatter.svg')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC5',x='PC5',alpha=0.4)
-# plt.show()
-plt.savefig('PC5_PC5_scatter.svg')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC6',x='PC6',alpha=0.4)
-# plt.show()
-plt.savefig('PC6_PC6_scatter.svg')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
+# Get PNG
 
-############## GET ALL PAIRWISE PCA PC vs. PC GRAPHS                # CONSIDER A LOOP STRUCTURE
-
-############## PNG filetype
 ############## PC1-GROUP
+sns.scatterplot(data=pc_categories,y='PC1',x='PC1',alpha=0.4)
+# plt.show()
+plt.savefig('./out/PC1_PC1_scatter.png')
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
 sns.scatterplot(data=pc_categories,y='PC1',x='PC2',alpha=0.4)
 # plt.show()
-plt.savefig('PC1_PC2_scatter.png')
+plt.savefig('./out/PC1_PC2_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 sns.scatterplot(data=pc_categories,y='PC1',x='PC3',alpha=0.4)
 # plt.show()
-plt.savefig('PC1_PC3_scatter.png')
+plt.savefig('./out/PC1_PC3_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 sns.scatterplot(data=pc_categories,y='PC1',x='PC4',alpha=0.4)
 # plt.show()
-plt.savefig('PC1_PC4_scatter.png')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC1',x='PC5',alpha=0.4)
-# plt.show()
-plt.savefig('PC1_PC5_scatter.png')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC1',x='PC6',alpha=0.4)
-# plt.show()
-plt.savefig('PC1_PC6_scatter.png')
+plt.savefig('./out/PC1_PC4_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 
 ############## PC2-GROUP
+sns.scatterplot(data=pc_categories,y='PC2',x='PC1',alpha=0.4)
+# plt.show()
+plt.savefig('./out/PC2_PC1_scatter.png')
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+sns.scatterplot(data=pc_categories,y='PC2',x='PC2',alpha=0.4)
+# plt.show()
+plt.savefig('./out/PC2_PC2_scatter.png')
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
 sns.scatterplot(data=pc_categories,y='PC2',x='PC3',alpha=0.4)
 # plt.show()
-plt.savefig('PC2_PC3_scatter.png')
+plt.savefig('./out/PC2_PC3_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 sns.scatterplot(data=pc_categories,y='PC2',x='PC4',alpha=0.4)
 # plt.show()
-plt.savefig('PC2_PC4_scatter.png')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC2',x='PC5',alpha=0.4)
-# plt.show()
-plt.savefig('PC2_PC5_scatter.png')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC2',x='PC6',alpha=0.4)
-# plt.show()
-plt.savefig('PC2_PC6_scatter.png')
+plt.savefig('./out/PC2_PC4_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 
 ############## PC3-GROUP
+sns.scatterplot(data=pc_categories,y='PC3',x='PC1',alpha=0.4)
+# plt.show()
+plt.savefig('./out/PC3_PC1_scatter.png')
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+sns.scatterplot(data=pc_categories,y='PC3',x='PC2',alpha=0.4)
+# plt.show()
+plt.savefig('./out/PC3_PC2_scatter.png')
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+sns.scatterplot(data=pc_categories,y='PC3',x='PC3',alpha=0.4)
+# plt.show()
+plt.savefig('./out/PC3_PC3_scatter.png')
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
 sns.scatterplot(data=pc_categories,y='PC3',x='PC4',alpha=0.4)
 # plt.show()
-plt.savefig('PC3_PC4_scatter.png')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC3',x='PC5',alpha=0.4)
-# plt.show()
-plt.savefig('PC3_PC5_scatter.png')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC3',x='PC6',alpha=0.4)
-# plt.show()
-plt.savefig('PC3_PC6_scatter.png')
+plt.savefig('./out/PC3_PC4_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 
 ############## PC4-GROUP
-sns.scatterplot(data=pc_categories,y='PC4',x='PC5',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC4',x='PC1',alpha=0.4)
 # plt.show()
-plt.savefig('PC4_PC5_scatter.png')
+plt.savefig('./out/PC4_PC1_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC4',x='PC6',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC4',x='PC2',alpha=0.4)
 # plt.show()
-plt.savefig('PC4_PC6_scatter.png')
+plt.savefig('./out/PC4_PC2_scatter.png')
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+sns.scatterplot(data=pc_categories,y='PC4',x='PC3',alpha=0.4)
+# plt.show()
+plt.savefig('./out/PC4_PC3_scatter.png')
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+sns.scatterplot(data=pc_categories,y='PC4',x='PC4',alpha=0.4)
+# plt.show()
+plt.savefig('./out/PC4_PC4_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 
-############## PC5-GROUP
-sns.scatterplot(data=pc_categories,y='PC5',x='PC6',alpha=0.4)
-# plt.show()
-plt.savefig('PC5_PC6_scatter.png')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
 
-############## SVG filetype
+
+# Get SVG
+
 ############## PC1-GROUP
+sns.scatterplot(data=pc_categories,y='PC1',x='PC1',alpha=0.4)
+# plt.show()
+plt.savefig('./out/PC1_PC1_scatter.svg')
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
 sns.scatterplot(data=pc_categories,y='PC1',x='PC2',alpha=0.4)
 # plt.show()
-plt.savefig('PC1_PC2_scatter.svg')
+plt.savefig('./out/PC1_PC2_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 sns.scatterplot(data=pc_categories,y='PC1',x='PC3',alpha=0.4)
 # plt.show()
-plt.savefig('PC1_PC3_scatter.svg')
+plt.savefig('./out/PC1_PC3_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 sns.scatterplot(data=pc_categories,y='PC1',x='PC4',alpha=0.4)
 # plt.show()
-plt.savefig('PC1_PC4_scatter.svg')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC1',x='PC5',alpha=0.4)
-# plt.show()
-plt.savefig('PC1_PC5_scatter.svg')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC1',x='PC6',alpha=0.4)
-# plt.show()
-plt.savefig('PC1_PC6_scatter.svg')
+plt.savefig('./out/PC1_PC4_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 
 ############## PC2-GROUP
+sns.scatterplot(data=pc_categories,y='PC2',x='PC1',alpha=0.4)
+# plt.show()
+plt.savefig('./out/PC2_PC1_scatter.svg')
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+sns.scatterplot(data=pc_categories,y='PC2',x='PC2',alpha=0.4)
+# plt.show()
+plt.savefig('./out/PC2_PC2_scatter.svg')
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
 sns.scatterplot(data=pc_categories,y='PC2',x='PC3',alpha=0.4)
 # plt.show()
-plt.savefig('PC2_PC3_scatter.svg')
+plt.savefig('./out/PC2_PC3_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 sns.scatterplot(data=pc_categories,y='PC2',x='PC4',alpha=0.4)
 # plt.show()
-plt.savefig('PC2_PC4_scatter.svg')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC2',x='PC5',alpha=0.4)
-# plt.show()
-plt.savefig('PC2_PC5_scatter.svg')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC2',x='PC6',alpha=0.4)
-# plt.show()
-plt.savefig('PC2_PC6_scatter.svg')
+plt.savefig('./out/PC2_PC4_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 
 ############## PC3-GROUP
+sns.scatterplot(data=pc_categories,y='PC3',x='PC1',alpha=0.4)
+# plt.show()
+plt.savefig('./out/PC3_PC1_scatter.svg')
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+sns.scatterplot(data=pc_categories,y='PC3',x='PC2',alpha=0.4)
+# plt.show()
+plt.savefig('./out/PC3_PC2_scatter.svg')
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+sns.scatterplot(data=pc_categories,y='PC3',x='PC3',alpha=0.4)
+# plt.show()
+plt.savefig('./out/PC3_PC3_scatter.svg')
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
 sns.scatterplot(data=pc_categories,y='PC3',x='PC4',alpha=0.4)
 # plt.show()
-plt.savefig('PC3_PC4_scatter.svg')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC3',x='PC5',alpha=0.4)
-# plt.show()
-plt.savefig('PC3_PC5_scatter.svg')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC3',x='PC6',alpha=0.4)
-# plt.show()
-plt.savefig('PC3_PC6_scatter.svg')
+plt.savefig('./out/PC3_PC4_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
 
 ############## PC4-GROUP
-sns.scatterplot(data=pc_categories,y='PC4',x='PC5',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC4',x='PC1',alpha=0.4)
 # plt.show()
-plt.savefig('PC4_PC5_scatter.svg')
+plt.savefig('./out/PC4_PC1_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC4',x='PC6',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC4',x='PC2',alpha=0.4)
 # plt.show()
-plt.savefig('PC4_PC6_scatter.svg')
+plt.savefig('./out/PC4_PC2_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-
-############## PC5-GROUP
-sns.scatterplot(data=pc_categories,y='PC5',x='PC6',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC4',x='PC3',alpha=0.4)
 # plt.show()
-plt.savefig('PC5_PC6_scatter.svg')
+plt.savefig('./out/PC4_PC3_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-
-########################################################
-# make the lower triangle plots (for a PC1, PC2, PC3 square 3x3 grid)
-########################################################
-#### SVGs output ####
-sns.scatterplot(data=pc_categories,y='PC2',x='PC1',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC4',x='PC4',alpha=0.4)
 # plt.show()
-plt.savefig('PC2_PC1_scatter.svg')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC3',x='PC1',alpha=0.4)
-# plt.show()
-plt.savefig('PC3_PC1_scatter.svg')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC3',x='PC2',alpha=0.4)
-# plt.show()
-plt.savefig('PC3_PC2_scatter.svg')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-#### PNGs output ####
-sns.scatterplot(data=pc_categories,y='PC2',x='PC1',alpha=0.4)
-# plt.show()
-plt.savefig('PC2_PC1_scatter.png')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC3',x='PC1',alpha=0.4)
-# plt.show()
-plt.savefig('PC3_PC1_scatter.png')
-## Clear plot space
-plt.clf()
-plt.cla()
-plt.close()
-sns.scatterplot(data=pc_categories,y='PC3',x='PC2',alpha=0.4)
-# plt.show()
-plt.savefig('PC3_PC2_scatter.png')
+plt.savefig('./out/PC4_PC4_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
@@ -769,7 +782,7 @@ clusterer = Pipeline(
        (
            "kmeans",
            KMeans(
-               n_clusters=6,
+               n_clusters=7,
                init="k-means++",
                n_init=50,
                max_iter=500,
@@ -796,7 +809,7 @@ predicted_labels = pipe["clusterer"]["kmeans"].labels_
 
 # Evaluate the performance by calculating the silhouette coefficient:
 silhouette_score(preprocessed_data, predicted_labels)
-# np.float64(0.5723888163141256)
+# np.float64(0.5621971465820254)
 
 
 ####################################################################################################
@@ -820,14 +833,14 @@ sns.set_style("white")
 scat = sns.scatterplot(x="PC1",y="PC2",data=pcadf,hue="predicted_cluster",palette="tab10",)
 # scat = sns.scatterplot(x="PC1",y="PC2",data=pcadf,hue="predicted_cluster",palette=custom_palette,cmap=cmap,)
 # Add a TITLE element to scat (sns var)
-scat.set_title("k-means cluster: ~185K alleles from 164 anemia-enriched loci")
+scat.set_title("k-means cluster: ~112,534 alleles across 4 cats of 199 anemia-enriched loci")
 # Configure LEGEND element
 handles, labels  =  scat.get_legend_handles_labels()
 scat.legend(handles, labels, loc='center right')
 # Display plot
 # plt.show()
 # Save plot as a PNG file to disk
-plt.savefig('kmeans_clustered_PC2_PC1_scatter.png')
+plt.savefig('./out/kmeans_clustered_PC2_PC1_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
@@ -844,14 +857,14 @@ sns.set_style("white")
 scat = sns.scatterplot(x="PC1",y="PC2",data=pcadf,hue="predicted_cluster",palette="tab10",)
 # scat = sns.scatterplot(x="PC1",y="PC2",data=pcadf,hue="predicted_cluster",palette=custom_palette,cmap=cmap,)
 # Add a TITLE element to scat (sns var)
-scat.set_title("k-means cluster: ~1.1 million alleles from 2359 loci")
+scat.set_title("k-means cluster: ~112,534 alleles across 4 cats of 199 anemia-enriched loci")
 # Configure LEGEND element
 handles, labels  =  scat.get_legend_handles_labels()
 scat.legend(handles, labels, loc='center right')
 # Display plot
 # plt.show()
-# Save plot as a PNG file to disk
-plt.savefig('kmeans_clustered_PC2_PC1_scatter.svg')
+# Save plot as a SVG file to disk
+plt.savefig('./out/kmeans_clustered_PC2_PC1_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
