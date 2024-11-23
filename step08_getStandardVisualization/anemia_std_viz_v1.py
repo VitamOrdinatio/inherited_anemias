@@ -774,8 +774,10 @@ sns.barplot(x="freqsum____LB_B", y="gene_name", data=df,
 sns.set_color_codes("pastel")
 sns.barplot(x="B.freq", y="gene_name", data=df,
             label="Benign", color="#29386F")
+plt.subplots_adjust(left=0.186)  # Adjust the value as needed
 # Set legend title
-ax.legend(title="ClinVar Allele\nFrequency Category")
+# ax.legend(title="ClinVar Allele\nFrequency Category")
+plt.legend(shadow=True, fancybox=True, ncol=1, title="Allele Frequency Category")
 # Set axis labels
 ax.set(ylabel='Gene Name', xlabel='Allele Frequency')
 # Save plot to disk
@@ -786,6 +788,8 @@ plt.savefig('./out/hBARtop20genes_byAlleleFreqs.png')
 plt.clf()
 plt.cla()
 plt.close()
+
+
 
 
 #### Get a SVG of a rawAlleleCount_top20genes horizontal bar plot of 4 ClinVar categories
@@ -810,8 +814,10 @@ sns.barplot(x="freqsum____LB_B", y="gene_name", data=df,
 sns.set_color_codes("pastel")
 sns.barplot(x="B.freq", y="gene_name", data=df,
             label="Benign", color="#29386F")
+plt.subplots_adjust(left=0.186)  # Adjust the value as needed
 # Set legend title
-ax.legend(title="ClinVar Allele\nFrequency Category")
+# ax.legend(title="ClinVar Allele\nFrequency Category")
+plt.legend(shadow=True, fancybox=True, ncol=1, title="Allele Frequency Category")
 # Set axis labels
 ax.set(ylabel='Gene Name', xlabel='Allele Frequency')
 # Save plot to disk
