@@ -49,19 +49,129 @@ warnings.filterwarnings("ignore")
 
 # LOAD DATA
 
-HPOgenes_df = pd.DataFrame()                             
-HPOgenes_df = pd.read_csv('./in/anemia_199_loci_HPO_TDAprep.csv')
+# HPO enrichment for select genes:
+HPOgenesDF = pd.DataFrame()                             
+HPOgenesDF = pd.read_csv('./in/anemia_199_loci_HPO_TDAprep.csv')
+
+# Extract a list of genes from loaded dataset:
+genes = HPOgenesDF['gene']
+# Convert pandas series to a list of string elements:
+genes = genes.tolist()
+len(genes)      # 199 loci
+
+# Pull out numeric only columns (remove the 'gene' column)
+non_numeric = ['gene']
+numeric_HPOgenesDF = HPOgenesDF.drop(non_numeric, axis=1)
+# Extract a list of HPO terms from loaded dataset:
+HPOterms = numeric_HPOgenesDF.columns
+# Convert pandas index to a list of string elements
+HPOterms = HPOterms.tolist()
+len(HPOterms)   # 619 terms
+
+# Count HPO term enrichment per single genetic locus:
+row_sums = numeric_HPOgenesDF.sum(axis=1)
+# Convert pandas series to a list of int elements:
+row_sums = row_sums.tolist()
+# Measure row_sums (gene = row)
+len(row_sums)
+# 199
+
+# Count the number of genes are tagged per single HPO term:
+col_sums = numeric_HPOgenesDF.sum(axis=0)
+# Convert pandas series to a list of int elements:
+col_sums = col_sums.tolist()
+# Measure col_sums (column = HPO term)
+len(col_sums)
+# 619
+
+## Useful variables:
+# dataframes
+HPOgenesDF
+numeric_HPOgenesDF
+# listVars
+genes       # list of string elements, each string = gene name
+row_sums    # list of INT elements, each element = SUM of how often gene name appears across all HPO terms
+HPOterms    # list of string elements, each string = HPO term name
+col_sums    # list of INT elements, each element = SUM of how often an HPO term appears across all genetic loci
+
+
+# First, let's generate a word cloud input list for gene usage
+
+i = 0
+geneNameEssay = ""
+
+for i in range(len(genes)):
+    # get a gene name (str) from list of genes:
+    gene = genes[i]
+    # get the sum of this gene's name as seen across all HPO terms:
+    observations = row_sums[i]
+    j = 0
+    for j in range(observations):
+        geneNameEssay = geneNameEssay + " " + gene
+
+
+len(geneNameEssay)      # 140,777 characters
+type(geneNameEssay)     # string datatype
+
+# Flush counters
+i = 0
+j = 0
+# Set accumulator string variable
+hpoNameEssay = ""
+
+for i in range(len(HPOterms)):
+    # get an HPO term (str) from list of HPO terms
+    hpoTerm = HPOterms[i]
+    # get the sum of this HPO term's usage as seen across all genes:
+    observations = col_sums[i]
+    j = 0
+    for j in range(observations):
+        hpoNameEssay = hpoNameEssay + " " + hpoTerm
+
+len(hpoNameEssay)   # 679,746 characters
+type(hpoNameEssay)  # <class 'str'>
+
+# String maintenance (remove underscore, and replace with space)
+hpoNameEssay = hpoNameEssay.replace('_', ' ')
+# May need to clean up common string terms later as well
 
 
 
+# Pass to a dedicated text variable:
+text = geneNameEssay
+# Create and generate a word cloud image:
+# Changing optional word cloud arguments
+wordcloud = WordCloud(max_font_size=50, max_words=20, background_color="white").generate(text)
+plt.figure()
+plt.imshow(wordcloud, interpolation="bilinear")
+plt.axis("off")
+plt.show()
 
 
 
+# Pass to a dedicated text variable:
+text = hpoNameEssay.lower()
 
 
+# Changing optional word cloud arguments
+# Now, change some optional arguments of the word cloud like max_font_size, max_word, and background_color.
+# lower max_font_size, change the maximum number of word and lighten the background:
+# wordcloud = WordCloud(max_font_size=50, max_words=100, background_color="white").generate(text)
 
 
+# Create stopword list:
+stopwords = set(STOPWORDS)
+stopwords.update(['Abnormal', 'involving', 'system', 'Morphological', 'count', 'morphology', 'forming', 'Abnormality',
+                  'concentration', 'central', 'tissue', 'physiology', 'activity', 'physiology', 'abnormal', 'abnormality',
+                  'of', 'the'])
 
+# Generate a word cloud image
+wordcloud = WordCloud(max_font_size=50, max_words=100, stopwords=stopwords, background_color="white").generate(text)
+
+# Display the generated image:
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis("off")
+plt.show()
 
 
 
