@@ -196,7 +196,8 @@ tsne_df.var()
 # y    110.879532
 # dtype: float32
 
-# Boxplots
+############################################################# TSNE
+# t-SNE Boxplots
 
 # get an SVG version
 sns.boxplot(tsne_df)
@@ -830,13 +831,13 @@ plt.style.use("fivethirtyeight")
 # sns.set_style("white", {"axes.facecolor": "white"})
 sns.set_style("white")
 # Fill the scat variable with Seaborn scatterplot elements:
-scat = sns.scatterplot(x="PC1",y="PC2",data=pcadf,hue="predicted_cluster",palette="tab10",)
-# scat = sns.scatterplot(x="PC1",y="PC2",data=pcadf,hue="predicted_cluster",palette=custom_palette,cmap=cmap,)
+scat = sns.scatterplot(x="PC2",y="PC1",data=pcadf,hue="predicted_cluster",palette="tab10",)
+# scat = sns.scatterplot(x="PC2",y="PC1",data=pcadf,hue="predicted_cluster",palette=custom_palette,cmap=cmap,)
 # Add a TITLE element to scat (sns var)
 scat.set_title("k-means cluster: ~112,534 alleles across 4 cats of 199 anemia-enriched loci")
 # Configure LEGEND element
 handles, labels  =  scat.get_legend_handles_labels()
-scat.legend(handles, labels, loc='center right')
+scat.legend(handles, labels, loc='upper right')
 # Display plot
 # plt.show()
 # Save plot as a PNG file to disk
@@ -854,13 +855,13 @@ plt.style.use("fivethirtyeight")
 # sns.set_style("white", {"axes.facecolor": "white"})
 sns.set_style("white")
 # Fill the scat variable with Seaborn scatterplot elements:
-scat = sns.scatterplot(x="PC1",y="PC2",data=pcadf,hue="predicted_cluster",palette="tab10",)
-# scat = sns.scatterplot(x="PC1",y="PC2",data=pcadf,hue="predicted_cluster",palette=custom_palette,cmap=cmap,)
+scat = sns.scatterplot(x="PC2",y="PC1",data=pcadf,hue="predicted_cluster",palette="tab10",)
+# scat = sns.scatterplot(x="PC2",y="PC1",data=pcadf,hue="predicted_cluster",palette=custom_palette,cmap=cmap,)
 # Add a TITLE element to scat (sns var)
 scat.set_title("k-means cluster: ~112,534 alleles across 4 cats of 199 anemia-enriched loci")
 # Configure LEGEND element
 handles, labels  =  scat.get_legend_handles_labels()
-scat.legend(handles, labels, loc='center right')
+scat.legend(handles, labels, loc='upper right')
 # Display plot
 # plt.show()
 # Save plot as a SVG file to disk
