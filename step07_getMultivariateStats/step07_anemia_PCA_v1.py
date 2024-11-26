@@ -782,7 +782,7 @@ clusterer = Pipeline(
        (
            "kmeans",
            KMeans(
-               n_clusters=7,
+               n_clusters=6,
                init="k-means++",
                n_init=50,
                max_iter=500,
