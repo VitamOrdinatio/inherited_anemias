@@ -139,7 +139,8 @@ numeric_alleles_df.describe()
 # Run seaborn's pairplot analysis
 
 # get an SVG version
-sns.pairplot(numeric_alleles_df, diag_kind ='hist')
+# sns.pairplot(numeric_alleles_df, diag_kind ='hist')
+sns.pairplot( numeric_alleles_df, kind='reg', diag_kind ='kde', diag_kws={'color':'#44A043'},                                  plot_kws={'line_kws':{'color':'#802A2A'}} )
 # Make sure on Win11/WSL2 to first run XLaunch, and ensure that 'disable access controls' is toggled ON in last menu dialog
 # SAVE the pairplot to file system
 plt.savefig('./out/raw_pairplot.svg')
@@ -149,7 +150,8 @@ plt.cla()
 plt.close()
 
 # get a PNG version
-sns.pairplot(numeric_alleles_df, diag_kind ='hist')
+# sns.pairplot(numeric_alleles_df, diag_kind ='hist')
+sns.pairplot( numeric_alleles_df, kind='reg', diag_kind ='kde', diag_kws={'color':'#44A043'},                                  plot_kws={'line_kws':{'color':'#802A2A'}} )
 plt.savefig('./out/raw_pairplot.png')
 ## Clear plot space
 plt.clf()
@@ -175,8 +177,10 @@ tsne_df['y'] = tsne_features[:,1]
 # Setup an sns scatterplot to visualize tsne analysis
 
 # get an SVG version
-sns.scatterplot( x="x", y="y", data=tsne_df )
+ax = sns.scatterplot( x="y", y="x", data=tsne_df, color='#802A2A' )
 # sns.scatterplot( x="x", y="y", hue="y", palette=sns.color_palette("hls", 10), data=tsne_df, legend="full", alpha=0.3 )
+plt.xlabel('t-SNE dimension 2')
+plt.ylabel('t-SNE dimension 1')
 plt.savefig('./out/TSNE_scatterplot.svg')
 ## Clear plot space
 plt.clf()
@@ -184,7 +188,10 @@ plt.cla()
 plt.close()
 
 # get a PNG version
-sns.scatterplot( x="x", y="y", data=tsne_df )
+ax = sns.scatterplot( x="y", y="x", data=tsne_df, color='#802A2A' )
+# sns.scatterplot( x="x", y="y", hue="y", palette=sns.color_palette("hls", 10), data=tsne_df, legend="full", alpha=0.3 )
+plt.xlabel('t-SNE dimension 2')
+plt.ylabel('t-SNE dimension 1')
 plt.savefig('./out/TSNE_scatterplot.png')
 ## Clear plot space
 plt.clf()
@@ -200,7 +207,10 @@ tsne_df.var()
 # t-SNE Boxplots
 
 # get an SVG version
-sns.boxplot(tsne_df)
+ax = sns.boxplot(tsne_df, color='#FCE5EA')
+ax.set_xticklabels(["1", "2"])
+plt.xlabel('t-SNE dimensionality')
+plt.ylabel('data spread across low-dimensional space')
 # plt.show()
 plt.savefig('./out/TSNE_boxplot.svg')
 ## Clear plot space
@@ -209,7 +219,11 @@ plt.cla()
 plt.close()
 
 # get a PNG version
-sns.boxplot(tsne_df)
+ax = sns.boxplot(tsne_df, color='#FCE5EA')
+ax.set_xticklabels(["1", "2"])
+plt.xlabel('t-SNE dimensionality')
+plt.ylabel('data spread across low-dimensional space')
+# plt.show()
 plt.savefig('./out/TSNE_boxplot.png')
 ## Clear plot space
 plt.clf()
@@ -338,9 +352,8 @@ pcaDF.to_csv('./out/PCA_explained_variance_ratio.csv')
         #   CATEGORY: Pathogenic            (dark red)      #802A2A
         
 
-
 ## Barplot (PNG)
-ax = sns.barplot(data=pcaDF, x='PC', y='ExpVarRatios', color='#29386F')
+ax = sns.barplot(data=pcaDF, x='PC', y='ExpVarRatios', color='#E5EBFB', linewidth=0.8, edgecolor='#29386F')
 ax.set_xticklabels(ax.get_xticklabels(), ha="right")
 plt.xlabel('principal component')
 plt.ylabel('explained variance ratio')
@@ -355,7 +368,7 @@ plt.cla()
 plt.close()
 
 ## Barplot (SVG)
-ax = sns.barplot(data=pcaDF, x='PC', y='ExpVarRatios', color='#29386F')
+ax = sns.barplot(data=pcaDF, x='PC', y='ExpVarRatios', color='#E5EBFB', linewidth=0.8, edgecolor='#29386F')
 ax.set_xticklabels(ax.get_xticklabels(), ha="right")
 plt.xlabel('principal component')
 plt.ylabel('explained variance ratio')
@@ -462,7 +475,7 @@ for i in range(len(pca.components_)):
     LB_ComponentRuleSet.append(float(pca.components_[i][1]))
     LP_ComponentRuleSet.append(float(pca.components_[i][2]))
     P_ComponentRuleSet.append(float(pca.components_[i][3]))
-    
+
 
 
 pcaDF['B.rules'] = B_ComponentRuleSet
@@ -497,33 +510,43 @@ pc_categories['PC2'] = pc[:,1]
 pc_categories['PC3'] = pc[:,2]
 pc_categories['PC4'] = pc[:,3]
 
+### Assigned color spectrum 
+# IDENTITY  'black'
+# 1v2       '#2CA02C
+# 1v3       '#9467BD
+# 1v4       '#D62728
+# 2v3       '#8C564B
+# 2v4       '#1F77B4
+# 3v4       '#FF7F0E
+
+
 ############## GET ALL PAIRWISE PCA PC PLOTS           # CONSIDER A LOOP STRUCTURE
 
 # Get PNG
 
 ############## PC1-GROUP
-sns.scatterplot(data=pc_categories,y='PC1',x='PC1',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC1',x='PC1',alpha=0.4, color='black')
 # plt.show()
 plt.savefig('./out/PC1_PC1_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC1',x='PC2',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC1',x='PC2',alpha=0.4, color='#2CA02C')
 # plt.show()
 plt.savefig('./out/PC1_PC2_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC1',x='PC3',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC1',x='PC3',alpha=0.4, color='#9467BD')
 # plt.show()
 plt.savefig('./out/PC1_PC3_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC1',x='PC4',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC1',x='PC4',alpha=0.4, color='#D62728')
 # plt.show()
 plt.savefig('./out/PC1_PC4_scatter.png')
 ## Clear plot space
@@ -532,28 +555,28 @@ plt.cla()
 plt.close()
 
 ############## PC2-GROUP
-sns.scatterplot(data=pc_categories,y='PC2',x='PC1',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC2',x='PC1',alpha=0.4, color='#2CA02C')
 # plt.show()
 plt.savefig('./out/PC2_PC1_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC2',x='PC2',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC2',x='PC2',alpha=0.4, color='black')
 # plt.show()
 plt.savefig('./out/PC2_PC2_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC2',x='PC3',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC2',x='PC3',alpha=0.4, color='#8C564B')
 # plt.show()
 plt.savefig('./out/PC2_PC3_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC2',x='PC4',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC2',x='PC4',alpha=0.4, color='#1F77B4')
 # plt.show()
 plt.savefig('./out/PC2_PC4_scatter.png')
 ## Clear plot space
@@ -562,28 +585,28 @@ plt.cla()
 plt.close()
 
 ############## PC3-GROUP
-sns.scatterplot(data=pc_categories,y='PC3',x='PC1',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC3',x='PC1',alpha=0.4, color='#9467BD')
 # plt.show()
 plt.savefig('./out/PC3_PC1_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC3',x='PC2',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC3',x='PC2',alpha=0.4, color='#8C564B')
 # plt.show()
 plt.savefig('./out/PC3_PC2_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC3',x='PC3',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC3',x='PC3',alpha=0.4, color='black')
 # plt.show()
 plt.savefig('./out/PC3_PC3_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC3',x='PC4',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC3',x='PC4',alpha=0.4, color='#FF7F0E')
 # plt.show()
 plt.savefig('./out/PC3_PC4_scatter.png')
 ## Clear plot space
@@ -592,28 +615,28 @@ plt.cla()
 plt.close()
 
 ############## PC4-GROUP
-sns.scatterplot(data=pc_categories,y='PC4',x='PC1',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC4',x='PC1',alpha=0.4, color='#D62728')
 # plt.show()
 plt.savefig('./out/PC4_PC1_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC4',x='PC2',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC4',x='PC2',alpha=0.4, color='#1F77B4')
 # plt.show()
 plt.savefig('./out/PC4_PC2_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC4',x='PC3',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC4',x='PC3',alpha=0.4, color='#FF7F0E')
 # plt.show()
 plt.savefig('./out/PC4_PC3_scatter.png')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC4',x='PC4',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC4',x='PC4',alpha=0.4, color='black')
 # plt.show()
 plt.savefig('./out/PC4_PC4_scatter.png')
 ## Clear plot space
@@ -626,28 +649,28 @@ plt.close()
 # Get SVG
 
 ############## PC1-GROUP
-sns.scatterplot(data=pc_categories,y='PC1',x='PC1',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC1',x='PC1',alpha=0.4, color='black')
 # plt.show()
 plt.savefig('./out/PC1_PC1_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC1',x='PC2',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC1',x='PC2',alpha=0.4, color='#2CA02C')
 # plt.show()
 plt.savefig('./out/PC1_PC2_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC1',x='PC3',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC1',x='PC3',alpha=0.4, color='#9467BD')
 # plt.show()
 plt.savefig('./out/PC1_PC3_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC1',x='PC4',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC1',x='PC4',alpha=0.4, color='#D62728')
 # plt.show()
 plt.savefig('./out/PC1_PC4_scatter.svg')
 ## Clear plot space
@@ -656,28 +679,28 @@ plt.cla()
 plt.close()
 
 ############## PC2-GROUP
-sns.scatterplot(data=pc_categories,y='PC2',x='PC1',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC2',x='PC1',alpha=0.4, color='#2CA02C')
 # plt.show()
 plt.savefig('./out/PC2_PC1_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC2',x='PC2',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC2',x='PC2',alpha=0.4, color='black')
 # plt.show()
 plt.savefig('./out/PC2_PC2_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC2',x='PC3',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC2',x='PC3',alpha=0.4, color='#8C564B')
 # plt.show()
 plt.savefig('./out/PC2_PC3_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC2',x='PC4',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC2',x='PC4',alpha=0.4, color='#1F77B4')
 # plt.show()
 plt.savefig('./out/PC2_PC4_scatter.svg')
 ## Clear plot space
@@ -686,28 +709,28 @@ plt.cla()
 plt.close()
 
 ############## PC3-GROUP
-sns.scatterplot(data=pc_categories,y='PC3',x='PC1',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC3',x='PC1',alpha=0.4, color='#9467BD')
 # plt.show()
 plt.savefig('./out/PC3_PC1_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC3',x='PC2',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC3',x='PC2',alpha=0.4, color='#8C564B')
 # plt.show()
 plt.savefig('./out/PC3_PC2_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC3',x='PC3',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC3',x='PC3',alpha=0.4, color='black')
 # plt.show()
 plt.savefig('./out/PC3_PC3_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC3',x='PC4',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC3',x='PC4',alpha=0.4, color='#FF7F0E')
 # plt.show()
 plt.savefig('./out/PC3_PC4_scatter.svg')
 ## Clear plot space
@@ -716,34 +739,279 @@ plt.cla()
 plt.close()
 
 ############## PC4-GROUP
-sns.scatterplot(data=pc_categories,y='PC4',x='PC1',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC4',x='PC1',alpha=0.4, color='#D62728')
 # plt.show()
 plt.savefig('./out/PC4_PC1_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC4',x='PC2',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC4',x='PC2',alpha=0.4, color='#1F77B4')
 # plt.show()
 plt.savefig('./out/PC4_PC2_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC4',x='PC3',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC4',x='PC3',alpha=0.4, color='#FF7F0E')
 # plt.show()
 plt.savefig('./out/PC4_PC3_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
-sns.scatterplot(data=pc_categories,y='PC4',x='PC4',alpha=0.4)
+sns.scatterplot(data=pc_categories,y='PC4',x='PC4',alpha=0.4, color='black')
 # plt.show()
 plt.savefig('./out/PC4_PC4_scatter.svg')
 ## Clear plot space
 plt.clf()
 plt.cla()
 plt.close()
+
+
+
+
+
+
+########################################################################
+
+# Build a composite plot 4x4
+
+########################################################################
+
+# Get PNG
+
+# Set canvas space
+fig, axes = plt.subplots(4, 4, figsize=(16, 16))
+# Work on PC1
+ax = sns.scatterplot(ax=axes[0, 0], data=pc_categories,y='PC1',x='PC1',alpha=0.4, color='black')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+# ax.set(ylabel=None)
+ax.set_xticklabels([])
+# ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[0, 1], data=pc_categories,y='PC1',x='PC2',alpha=0.4, color='#2CA02C')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[0, 2], data=pc_categories,y='PC1',x='PC3',alpha=0.4, color='#9467BD')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[0, 3], data=pc_categories,y='PC1',x='PC4',alpha=0.4, color='#D62728')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+# Work on PC2
+ax = sns.scatterplot(ax=axes[1, 0], data=pc_categories,y='PC2',x='PC1',alpha=0.4, color='#2CA02C')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+# ax.set(ylabel=None)
+ax.set_xticklabels([])
+# ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[1, 1], data=pc_categories,y='PC2',x='PC2',alpha=0.4, color='black')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[1, 2], data=pc_categories,y='PC2',x='PC3',alpha=0.4, color='#8C564B')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[1, 3], data=pc_categories,y='PC2',x='PC4',alpha=0.4, color='#1F77B4')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+# Work on PC3
+ax = sns.scatterplot(ax=axes[2, 0], data=pc_categories,y='PC3',x='PC1',alpha=0.4, color='#9467BD')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+# ax.set(ylabel=None)
+ax.set_xticklabels([])
+# ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[2, 1], data=pc_categories,y='PC3',x='PC2',alpha=0.4, color='#8C564B')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[2, 2], data=pc_categories,y='PC3',x='PC3',alpha=0.4, color='black')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[2, 3], data=pc_categories,y='PC3',x='PC4',alpha=0.4, color='#FF7F0E')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+# Work on PC4
+ax = sns.scatterplot(ax=axes[3, 0], data=pc_categories,y='PC4',x='PC1',alpha=0.4, color='#D62728')
+ax.tick_params(axis='both', width=2)
+# ax.set(xlabel=None)
+# ax.set(ylabel=None)
+# ax.set_xticklabels([])
+# ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[3, 1], data=pc_categories,y='PC4',x='PC2',alpha=0.4, color='#1F77B4')
+ax.tick_params(axis='both', width=2)
+# ax.set(xlabel=None)
+ax.set(ylabel=None)
+# ax.set_xticklabels([])
+ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[3, 2], data=pc_categories,y='PC4',x='PC3',alpha=0.4, color='#FF7F0E')
+ax.tick_params(axis='both', width=2)
+# ax.set(xlabel=None)
+ax.set(ylabel=None)
+# ax.set_xticklabels([])
+ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[3, 3], data=pc_categories,y='PC4',x='PC4',alpha=0.4, color='black')
+ax.tick_params(axis='both', width=2)
+# ax.set(xlabel=None)
+ax.set(ylabel=None)
+# ax.set_xticklabels([])
+ax.set_yticklabels([])
+# Tighten the subplot spacings
+plt.tight_layout()
+# View multiplot graph
+# plt.show()
+# Save to disk
+plt.savefig('./out/4PCx4PC_multiplot_scatter.png')
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+
+
+# Get SVG
+
+# Set canvas space
+fig, axes = plt.subplots(4, 4, figsize=(16, 16))
+# Work on PC1
+ax = sns.scatterplot(ax=axes[0, 0], data=pc_categories,y='PC1',x='PC1',alpha=0.4, color='black')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+# ax.set(ylabel=None)
+ax.set_xticklabels([])
+# ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[0, 1], data=pc_categories,y='PC1',x='PC2',alpha=0.4, color='#2CA02C')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[0, 2], data=pc_categories,y='PC1',x='PC3',alpha=0.4, color='#9467BD')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[0, 3], data=pc_categories,y='PC1',x='PC4',alpha=0.4, color='#D62728')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+# Work on PC2
+ax = sns.scatterplot(ax=axes[1, 0], data=pc_categories,y='PC2',x='PC1',alpha=0.4, color='#2CA02C')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+# ax.set(ylabel=None)
+ax.set_xticklabels([])
+# ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[1, 1], data=pc_categories,y='PC2',x='PC2',alpha=0.4, color='black')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[1, 2], data=pc_categories,y='PC2',x='PC3',alpha=0.4, color='#8C564B')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[1, 3], data=pc_categories,y='PC2',x='PC4',alpha=0.4, color='#1F77B4')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+# Work on PC3
+ax = sns.scatterplot(ax=axes[2, 0], data=pc_categories,y='PC3',x='PC1',alpha=0.4, color='#9467BD')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+# ax.set(ylabel=None)
+ax.set_xticklabels([])
+# ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[2, 1], data=pc_categories,y='PC3',x='PC2',alpha=0.4, color='#8C564B')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[2, 2], data=pc_categories,y='PC3',x='PC3',alpha=0.4, color='black')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[2, 3], data=pc_categories,y='PC3',x='PC4',alpha=0.4, color='#FF7F0E')
+ax.tick_params(axis='both', width=2)
+ax.set(xlabel=None)
+ax.set(ylabel=None)
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+# Work on PC4
+ax = sns.scatterplot(ax=axes[3, 0], data=pc_categories,y='PC4',x='PC1',alpha=0.4, color='#D62728')
+ax.tick_params(axis='both', width=2)
+# ax.set(xlabel=None)
+# ax.set(ylabel=None)
+# ax.set_xticklabels([])
+# ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[3, 1], data=pc_categories,y='PC4',x='PC2',alpha=0.4, color='#1F77B4')
+ax.tick_params(axis='both', width=2)
+# ax.set(xlabel=None)
+ax.set(ylabel=None)
+# ax.set_xticklabels([])
+ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[3, 2], data=pc_categories,y='PC4',x='PC3',alpha=0.4, color='#FF7F0E')
+ax.tick_params(axis='both', width=2)
+# ax.set(xlabel=None)
+ax.set(ylabel=None)
+# ax.set_xticklabels([])
+ax.set_yticklabels([])
+ax = sns.scatterplot(ax=axes[3, 3], data=pc_categories,y='PC4',x='PC4',alpha=0.4, color='black')
+ax.tick_params(axis='both', width=2)
+# ax.set(xlabel=None)
+ax.set(ylabel=None)
+# ax.set_xticklabels([])
+ax.set_yticklabels([])
+# Tighten the subplot spacings
+plt.tight_layout()
+# View multiplot graph
+# plt.show()
+# Save to disk
+plt.savefig('./out/4PCx4PC_multiplot_scatter.svg')
+## Clear plot space
+plt.clf()
+plt.cla()
+plt.close()
+
+
+
 
 
 ####################################################################################################

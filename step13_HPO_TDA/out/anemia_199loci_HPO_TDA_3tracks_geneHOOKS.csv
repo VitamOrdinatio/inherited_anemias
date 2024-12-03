@@ -1,0 +1,264 @@
+,track,node,band,gene,disorder_tagName
+0,1,1,Band 0,ABCA1,Tangier disease
+1,1,1,Band 1,ANKS6,renal
+2,1,1,Band 10,GLIS2,renal
+3,1,1,Band 11,HLA-DQA1,"Celiac disease, susceptibility to, 1"
+4,1,1,Band 12,KCNE1,Jervell and Lange-Nielsen syndrome 2
+5,1,1,Band 13,NAF1,"Pulmonary fibrosis and/or bone marrow failure syndrome, telomere-related, 7"
+6,1,1,Band 14,PNPO,B6
+7,1,1,Band 15,TERC,"Dyskeratosis congenita, autosomal dominant 1"
+8,1,1,Band 16,VWF,clot
+9,1,1,Band 17,XK,McLeod neuroacanthocytosis syndrome
+10,1,1,Band 18,MT-TA,mtDNA
+11,1,1,Band 19,MT-TR,mtDNA
+12,1,1,Band 2,ATP6V1B1,renal
+13,1,1,Band 20,MT-TN,mtDNA
+14,1,1,Band 21,MT-TD,mtDNA
+15,1,1,Band 22,MT-TC,mtDNA
+16,1,1,Band 23,MT-TE,mtDNA
+17,1,1,Band 24,MT-TQ,mtDNA
+18,1,1,Band 25,MT-TG,mtDNA
+19,1,1,Band 26,MT-TH,mtDNA
+20,1,1,Band 27,MT-TI,mtDNA
+21,1,1,Band 28,MT-TL1,mtDNA
+22,1,1,Band 29,MT-TL2,mtDNA
+23,1,1,Band 3,BAAT,Bile acid conjugation defect 1
+24,1,1,Band 30,MT-TK,mtDNA
+25,1,1,Band 31,MT-TM,mtDNA
+26,1,1,Band 32,MT-TF,mtDNA
+27,1,1,Band 33,MT-TP,mtDNA
+28,1,1,Band 34,MT-TS1,mtDNA
+29,1,1,Band 35,MT-TS2,mtDNA
+30,1,1,Band 36,MT-TT,mtDNA
+31,1,1,Band 37,MT-TW,mtDNA
+32,1,1,Band 38,MT-TY,mtDNA
+33,1,1,Band 39,MT-TV,mtDNA
+34,1,1,Band 4,CDIN1,CDA
+35,1,1,Band 40,MT-RNR1,mtDNA
+36,1,1,Band 41,MT-RNR2,mtDNA
+37,1,1,Band 5,CP,Fe
+38,1,1,Band 6,DDX41,DDX41-related hematologic malignancy predisposition syndrome
+39,1,1,Band 7,F9,clot
+40,1,1,Band 8,FARS2,OXPHOS
+41,1,1,Band 9,FMO3,Trimethylaminuria
+42,1,2,Band 0,ABCA1,Tangier disease
+43,1,2,Band 1,ABCG8,Sitosterolemia 1
+44,1,2,Band 10,CDAN1,CDA
+45,1,2,Band 11,CDIN1,CDA
+46,1,2,Band 12,CEP164,renal
+47,1,2,Band 13,CEP83,renal
+48,1,2,Band 14,CFB,Atypical hemolytic-uremic syndrome with B factor anomaly
+49,1,2,Band 15,COQ2,CoQ10
+50,1,2,Band 16,CP,Fe
+51,1,2,Band 17,DCDC2,renal
+52,1,2,Band 18,DDX41,DDX41-related hematologic malignancy predisposition syndrome
+53,1,2,Band 19,ELANE,"Neutropenia, severe congenital, 1, autosomal dominant"
+54,1,2,Band 2,ACVRL1,"Telangiectasia, hereditary hemorrhagic, type 2"
+55,1,2,Band 20,EPB42,HS
+56,1,2,Band 21,ETV6,clot
+57,1,2,Band 22,F8,clot
+58,1,2,Band 23,FAM111A,Autosomal dominant Kenny-Caffey syndrome
+59,1,2,Band 24,FARS2,OXPHOS
+60,1,2,Band 25,FMO3,Trimethylaminuria
+61,1,2,Band 26,FOXP3,Insulin-dependent diabetes mellitus secretory diarrhea syndrome
+62,1,2,Band 27,G6PC1,G6P
+63,1,2,Band 28,G6PC3,G6P
+64,1,2,Band 29,GLA,Fabry disease
+65,1,2,Band 3,ALG8,ALG8 congenital disorder of glycosylation
+66,1,2,Band 30,HAMP,Hemochromatosis type 2B
+67,1,2,Band 31,HBA1,thalassemia
+68,1,2,Band 32,HBA2,thalassemia
+69,1,2,Band 33,HCFC1,B12
+70,1,2,Band 34,INVS,renal
+71,1,2,Band 35,KCNQ1,Jervell and Lange-Nielsen syndrome 1
+72,1,2,Band 36,LIPA,Cholesteryl ester storage disease
+73,1,2,Band 37,LPIN2,Majeed syndrome
+74,1,2,Band 38,MMAA,B12
+75,1,2,Band 39,MMAB,B12
+76,1,2,Band 4,ALPL,Infantile hypophosphatasia
+77,1,2,Band 40,MMP1,ECM
+78,1,2,Band 41,MTTP,Abetalipoproteinaemia
+79,1,2,Band 42,MUC1,renal
+80,1,2,Band 43,NAF1,"Pulmonary fibrosis and/or bone marrow failure syndrome, telomere-related, 7"
+81,1,2,Band 44,NEK8,renal
+82,1,2,Band 45,NPHP4,renal
+83,1,2,Band 46,PCCA,Propionic acidemia
+84,1,2,Band 47,PCCB,Propionic acidemia
+85,1,2,Band 48,PEPD,Prolidase deficiency
+86,1,2,Band 49,PNPO,B6
+87,1,2,Band 5,ANKS6,renal
+88,1,2,Band 50,REN,Familial juvenile hyperuricemic nephropathy type 2
+89,1,2,Band 51,SAMD9L,Ataxia-pancytopenia syndrome
+90,1,2,Band 52,SLC19A2,"Megaloblastic anemia, thiamine-responsive, with diabetes mellitus and sensorineural deafness"
+91,1,2,Band 53,SLC2A1,Childhood onset GLUT1 deficiency syndrome 2
+92,1,2,Band 54,SLC46A1,B9
+93,1,2,Band 55,SMPD1,"Niemann-Pick disease, type B"
+94,1,2,Band 56,SURF1,OXPHOS
+95,1,2,Band 57,TFR2,Hemochromatosis type 3
+96,1,2,Band 58,THBD,Atypical hemolytic-uremic syndrome with thrombomodulin anomaly
+97,1,2,Band 59,VWF,clot
+98,1,2,Band 6,BAAT,Bile acid conjugation defect 1
+99,1,2,Band 60,WAS,clot
+100,1,2,Band 61,XPNPEP3,renal
+101,1,2,Band 62,MT-ATP8,mtDNA
+102,1,2,Band 63,MT-ND4L,mtDNA
+103,1,2,Band 7,BTK,X-linked agammaglobulinemia
+104,1,2,Band 8,CD40LG,Hyper-IgM syndrome type 1
+105,1,2,Band 9,CD46,Atypical hemolytic-uremic syndrome with MCP/CD46 anomaly
+106,1,3,Band 0,ACVRL1,"Telangiectasia, hereditary hemorrhagic, type 2"
+107,1,3,Band 1,ALG8,ALG8 congenital disorder of glycosylation
+108,1,3,Band 10,COL4A1,Brain small vessel disease 1 with or without ocular anomalies
+109,1,3,Band 11,COL7A1,ECM
+110,1,3,Band 12,CTC1,Cerebroretinal microangiopathy with calcifications and cysts 1
+111,1,3,Band 13,DCDC2,renal
+112,1,3,Band 14,DKC1,"Dyskeratosis congenita, X-linked"
+113,1,3,Band 15,DNAJC21,Shwachman-Diamond syndrome 1
+114,1,3,Band 16,ENG,"Telangiectasia, hereditary hemorrhagic, type 1"
+115,1,3,Band 17,FAH,Tyrosinemia type I
+116,1,3,Band 18,FOXP3,Insulin-dependent diabetes mellitus secretory diarrhea syndrome
+117,1,3,Band 19,G6PC3,G6P
+118,1,3,Band 2,ATP7B,Wilson disease
+119,1,3,Band 20,GLA,Fabry disease
+120,1,3,Band 21,HBA1,thalassemia
+121,1,3,Band 22,HLA-DQB1,"Celiac disease, susceptibility to, 1"
+122,1,3,Band 23,LYST,Chediak-Higashi syndrome
+123,1,3,Band 24,MEN1,"Multiple endocrine neoplasia, type 1"
+124,1,3,Band 25,MMAA,B12
+125,1,3,Band 26,MMAB,B12
+126,1,3,Band 27,MMADHC,B12
+127,1,3,Band 28,MMP1,ECM
+128,1,3,Band 29,MTR,B12
+129,1,3,Band 3,CD46,Atypical hemolytic-uremic syndrome with MCP/CD46 anomaly
+130,1,3,Band 30,MTRR,B12
+131,1,3,Band 31,NPHP3,renal
+132,1,3,Band 32,PCCA,Propionic acidemia
+133,1,3,Band 33,PCCB,Propionic acidemia
+134,1,3,Band 34,PEPD,Prolidase deficiency
+135,1,3,Band 35,PLEC,ECM
+136,1,3,Band 36,PRDX1,B12
+137,1,3,Band 37,RMRP,Metaphyseal dysplasia
+138,1,3,Band 38,SAMD9,MIRAGE syndrome
+139,1,3,Band 39,SBDS,Shwachman-Diamond syndrome 1
+140,1,3,Band 4,CFHR1,"Hemolytic uremic syndrome, atypical, susceptibility to, 1"
+141,1,3,Band 40,SLC25A13,Neonatal intrahepatic cholestasis due to citrin deficiency
+142,1,3,Band 41,SLC2A1,Childhood onset GLUT1 deficiency syndrome 2
+143,1,3,Band 42,SLC4A1,renal
+144,1,3,Band 43,SLC7A7,Lysinuric protein intolerance
+145,1,3,Band 44,SMARCAL1,Schimke immuno-osseous dysplasia
+146,1,3,Band 45,SRP54,Shwachman-Diamond syndrome 1
+147,1,3,Band 46,STK11,Peutz-Jeghers syndrome
+148,1,3,Band 47,TGFB1,Diaphyseal dysplasia
+149,1,3,Band 48,TINF2,Dyskeratosis congenita
+150,1,3,Band 49,UROS,Cutaneous porphyria
+151,1,3,Band 5,CFHR3,"Hemolytic uremic syndrome, atypical, susceptibility to, 1"
+152,1,3,Band 50,WAS,clot
+153,1,3,Band 51,WDR19,renal
+154,1,3,Band 52,MT-ND3,mtDNA
+155,1,3,Band 53,POLG2,mtDNA depletion syndrome
+156,1,3,Band 6,CFI,Atypical hemolytic-uremic syndrome with I factor anomaly
+157,1,3,Band 7,CLCN7,Osteopetrosis
+158,1,3,Band 8,COG1,COG1 congenital disorder of glycosylation
+159,1,3,Band 9,COL3A1,ECM
+160,1,4,Band 0,CFH,"Hemolytic uremic syndrome, atypical, susceptibility to, 1"
+161,1,4,Band 1,CFI,Atypical hemolytic-uremic syndrome with I factor anomaly
+162,1,4,Band 10,MMACHC,B12
+163,1,4,Band 11,MTR,B12
+164,1,4,Band 12,MTRR,B12
+165,1,4,Band 13,NPHP1,renal
+166,1,4,Band 14,PRDX1,B12
+167,1,4,Band 15,RBM8A,clot
+168,1,4,Band 16,RMRP,Metaphyseal dysplasia
+169,1,4,Band 17,SAMD9,MIRAGE syndrome
+170,1,4,Band 18,SLC37A4,G6P
+171,1,4,Band 19,SLC7A7,Lysinuric protein intolerance
+172,1,4,Band 2,COL3A1,ECM
+173,1,4,Band 20,SMARCAL1,Schimke immuno-osseous dysplasia
+174,1,4,Band 21,TGFB1,Diaphyseal dysplasia
+175,1,4,Band 22,TINF2,Dyskeratosis congenita
+176,1,4,Band 23,TMEM67,renal
+177,1,4,Band 24,TREX1,renal
+178,1,4,Band 25,WDR19,renal
+179,1,4,Band 26,MT-ATP6,mtDNA
+180,1,4,Band 27,MT-CO2,mtDNA
+181,1,4,Band 28,MT-CYB,mtDNA
+182,1,4,Band 29,MT-ND2,mtDNA
+183,1,4,Band 3,CTC1,Cerebroretinal microangiopathy with calcifications and cysts 1
+184,1,4,Band 30,POLG,mtDNA depletion syndrome
+185,1,4,Band 4,DKC1,"Dyskeratosis congenita, X-linked"
+186,1,4,Band 5,DNAJC21,Shwachman-Diamond syndrome 1
+187,1,4,Band 6,GBA1,Gaucher disease
+188,1,4,Band 7,HBB,thalassemia
+189,1,4,Band 8,IFIH1,Aicardi-Goutieres syndrome 7
+190,1,4,Band 9,LMBRD1,B12
+191,1,5,Band 0,MT-ATP6,mtDNA
+192,1,5,Band 1,MT-CO1,mtDNA
+193,1,5,Band 2,MT-CO2,mtDNA
+194,1,6,Band 0,MT-CO1,mtDNA
+195,1,6,Band 1,MT-CO3,mtDNA
+196,1,6,Band 2,MT-ND1,mtDNA
+197,1,6,Band 3,MT-ND4,mtDNA
+198,1,6,Band 4,MT-ND5,mtDNA
+199,1,6,Band 5,MT-ND6,mtDNA
+200,1,7,Band 0,C3,Atypical hemolytic-uremic syndrome with C3 anomaly
+201,1,7,Band 1,GBA1,Gaucher disease
+202,1,7,Band 2,SLC37A4,G6P
+203,1,7,Band 3,SMAD4,Juvenile polyposis/hereditary hemorrhagic telangiectasia syndrome
+204,1,7,Band 4,TERT,"Pulmonary fibrosis and/or bone marrow failure, Telomere-related, 1"
+205,1,7,Band 5,TREX1,renal
+206,2,1,Band 0,RPL15,DBA
+207,2,1,Band 1,RPL18,DBA
+208,2,1,Band 10,RPS29,DBA
+209,2,1,Band 11,RPS7,DBA
+210,2,1,Band 12,TSR2,DBA
+211,2,1,Band 2,RPL35,DBA
+212,2,1,Band 3,RPL35A,DBA
+213,2,1,Band 4,RPS10,DBA
+214,2,1,Band 5,RPS15A,DBA
+215,2,1,Band 6,RPS17,DBA
+216,2,1,Band 7,RPS24,DBA
+217,2,1,Band 8,RPS26,DBA
+218,2,1,Band 9,RPS28,DBA
+219,2,2,Band 0,RPL11,DBA
+220,2,2,Band 1,RPL15,DBA
+221,2,2,Band 10,RPS19,DBA
+222,2,2,Band 11,RPS24,DBA
+223,2,2,Band 12,RPS26,DBA
+224,2,2,Band 13,RPS28,DBA
+225,2,2,Band 14,RPS29,DBA
+226,2,2,Band 15,RPS7,DBA
+227,2,2,Band 16,TSR2,DBA
+228,2,2,Band 2,RPL18,DBA
+229,2,2,Band 3,RPL26,DBA
+230,2,2,Band 4,RPL35,DBA
+231,2,2,Band 5,RPL35A,DBA
+232,2,2,Band 6,RPL5,DBA
+233,2,2,Band 7,RPS10,DBA
+234,2,2,Band 8,RPS15A,DBA
+235,2,2,Band 9,RPS17,DBA
+236,2,3,Band 0,ADA2,Vasculitis due to ADA2 deficiency
+237,2,3,Band 1,GATA1,clot
+238,2,3,Band 2,RPL26,DBA
+239,3,1,Band 0,BRIP1,FA
+240,3,1,Band 1,FANCB,FA
+241,3,1,Band 10,SLX4,FA
+242,3,1,Band 11,UBE2T,FA
+243,3,1,Band 12,XRCC2,FA
+244,3,1,Band 2,FANCF,FA
+245,3,1,Band 3,FANCG,FA
+246,3,1,Band 4,FANCI,FA
+247,3,1,Band 5,FANCL,FA
+248,3,1,Band 6,MAD2L2,FA
+249,3,1,Band 7,RAD51,FA
+250,3,1,Band 8,RAD51C,FA
+251,3,1,Band 9,RFWD3,FA
+252,3,2,Band 0,BRCA1,FA
+253,3,2,Band 1,BRCA2,FA
+254,3,2,Band 10,RAD51C,FA
+255,3,2,Band 2,ERCC4,FA
+256,3,2,Band 3,FANCA,FA
+257,3,2,Band 4,FANCB,FA
+258,3,2,Band 5,FANCC,FA
+259,3,2,Band 6,FANCD2,FA
+260,3,2,Band 7,FANCE,FA
+261,3,2,Band 8,PALB2,FA
+262,3,2,Band 9,RAD51,FA
