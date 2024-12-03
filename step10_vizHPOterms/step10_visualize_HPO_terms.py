@@ -148,8 +148,8 @@ strGeneNameEssay = ', '.join(geneNameEssay)
 text = strGeneNameEssay
 # Create and generate a word cloud image:
 # Changing optional word cloud arguments
-wordcloud = WordCloud(max_font_size=50, max_words=40, colormap='plasma', background_color="white").generate(text)
-plt.figure()
+wordcloud = WordCloud(width=1600, height=800, max_words=40, colormap='plasma', background_color='#F7F2FE').generate(text)
+plt.figure(figsize=(20,10))
 plt.imshow(wordcloud, interpolation="bilinear")
 plt.axis("off")
 plt.savefig('./out/wordCloud_geneFreq_HPOenrichment.svg')
@@ -237,7 +237,11 @@ stopwords.update(['Abnormal', 'involving', 'system', 'Morphological', 'count', '
                   'concentration', 'central', 'tissue', 'physiology', 'activity', 'physiology', 'abnormal', 'abnormality',
                   'of', 'the'])
 # Generate a word cloud image
-wordcloud = WordCloud(max_font_size=50, max_words=40, stopwords=stopwords, background_color="white", colormap='plasma').generate(text)
+
+# wordcloud = WordCloud(max_font_size=50, max_words=40, stopwords=stopwords, background_color="white", colormap='plasma').generate(text)
+
+wordcloud = WordCloud(width=1600, height=800, max_words=40, stopwords=stopwords, colormap='plasma', background_color='#F7F2FE').generate(text)
+plt.figure(figsize=(20,10))
 # Display the generated image:
 plt.imshow(wordcloud, interpolation='bilinear')
 plt.axis("off")
