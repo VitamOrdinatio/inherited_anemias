@@ -376,7 +376,7 @@ for i in range(len(clusterNames)):
         plt.ylabel('ClinVar allelic frequencies')
         plt.xticks(fontsize=8)  
         plt.yticks(fontsize=8)
-        plt.legend( title = clusterName + ': ' + str(clusterGeneNumber) + ' genes' )
+        plt.legend( title = clusterName + ': ' + str(clusterGeneNumber) + ' genes', frameon=False)
         plt.title(clusterName)
         # plt.show()
         plt.savefig('./out/' + filename, transparent=True)
