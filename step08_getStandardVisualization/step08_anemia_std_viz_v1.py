@@ -74,7 +74,7 @@
 # python3 -m pip install kneed
 # deactivate
 
-### After VENV vPCA construciton, upon WSL bootup:
+### After VENV vPCA construction, upon WSL bootup:
 source gotovenv.sh
 source vPCA/bin/activate
 cd /mnt/c/wslshare/github/inherited_anemias/step08_getStandardVisualization
