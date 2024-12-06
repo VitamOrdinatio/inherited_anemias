@@ -51,5 +51,33 @@ Across all 199 anemia-enriched genetic loci, we scraped 192,296 unique alleles f
    6) A pie chart of a slice of the top 20 loci after sorting the list of 199 genes by normalized allele frequencies (derived from 4 ClinVar categories)
  
    7) A horizontal barplot showing the relative number of alleles across 4 categories for each of the top 20 loci by normalized allele frequencies
-		
+
+**STEP 9: Prepare HPO gene ontology enrichment terms for topological data analysis (TDA)**
+
+We manually loaded a list of 199 anemia-enriched loci into the online gene ontology (GO) / gene set enrichment analysis algorithm (GSEA) known as g:profiler. We next manually downloaded the various GO datasets for our anemia loci. The Human Phenotype Ontology (HPO) database contains ~18,000 unique phenotype terms, and after g:profiler analysis of our 199 anemia loci, we arrived at 619 statistically-significant, unique HPO terms.  To perform TDA on this dataset, we wrote custom python scripts to transform the g:profiler HPO intersections (which contains lists of gene names) for each of 619 HPO terms into a truth table. The resulting output is thus a dataframe of 199 rows (genes) by 619 columns (HPO terms) where each cell tracks 0 for no enrichment and 1 for enrichment.
+
+**STEP 10: Graphically visualize HPO GSEA terms using word clouds**
+
+To crudely visualize a truth table of 199 genes by 619 phenotypes, we employed pythonic wordclouds. We generated wordclouds for the top 40 of 199 genes and also the top 40 of 619 phenotypes found across the entire HPO GSEA set.
+
+**STEP 11: Perform ClinVar TDA analysis**
+
+We next generated allele frequencies on a per-locus basis for each of the 199 anemia-enriched loci. This permits mapping each gene in 4D-space, where each 1 of 4 axes services 1 of 4 ClinVar allele categories (B, LB, LP, and P). We then execute python's keplermapper to generate an interactive HTML that showcases how these 199 anemia loci interact in 4D space based on their ClinVar allelic categorical frequency distributions. A CSV file contains precise gene rosters for each TDA cluster. The output directory contains a log2-transformation of TDA node sizes which is useful for generating custom graphics in BioRender to approximate TDA node relationships.
+
+**STEP 12: Visualize ClinVar TDA output using CIRCOS plots**
+
+CIRCOS plots are useful to showcase the overall connectivity map across all TDA clusters. We used pyCirclize to generate CIRCOS plot digestions of our ClinVar TDA analysis of anemia loci.
+
+**STEP 13: Perform HPO TDA analysis**
+
+This step contains the keplermapper output for the HPO GSEA truth table constructed in step 09. Keplermapper settings are located in the "Anemia199_HPO_TDA_runParameters.txt" file. Precise gene rosters for each TDA cluster is found in the "Anemia199HPOBands.csv" file. An interactive HTML file that visualizes three TDA components (aka tracks) with varying nodes and gene members is provided in the "Anemia199HPOMapper.html" file. The output folder contains log2-transformations of node sizes which is useful for BioRender illustrations to summarize the HPO TDA output. A geneHOOKS CSV file was also produced to help visualize the biology domain expertise.
+
+**STEP 14: Visualize HPO TDA output using CIRCOS plots**
+
+CIRCOS plots are useful to showcase the overall connectivity map across all TDA clusters. We used pyCirclize to generate CIRCOS plot digestions of our HPO TDA analysis of anemia loci.
+
+
+**STEP 15: Get ClinVar TDA node definitions**
+
+We next extracted all genes found on the entire gene roster for any given TDA cluster (aka node). For each TDA node, we then calculated the mean ClinVar allelic frequency for each ClinVar allelic category. For the ClinVar TDA dataset, we thus generated 6 different barplots that approximates an estimation of how each ClinVar TDA node differs. SVG and PNG versions of the seaborn barplots are found in the output folder.
 		
