@@ -379,7 +379,7 @@ for i in range(len(clusterNames)):
         plt.legend( title = clusterName + ': ' + str(clusterGeneNumber) + ' genes' )
         plt.title(clusterName)
         # plt.show()
-        plt.savefig('./out/' + filename)
+        plt.savefig('./out/' + filename, transparent=True)
         ## Clear plot space
         plt.clf()
         plt.cla()
