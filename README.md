@@ -1,4 +1,4 @@
-**STEP 1: Scrape NCBI GTR for genetic conditions**
+**STEP 1: Scrape NCBI GTR for target genetic conditions**
 
 We sought to comprehensively scrape all inherited hematological disorders with the highest curation statuses. To this end, we employed custom python scripts leveraging web-scraping modules like beautifulsoup4 and performed HTML scrape operations against the NCBI GTR database for each of the following queries 1) anemia, 2) willebrand and 3) hereditary factor.  In all instances, we scraped results with applied filters for OMIM and NCBI GeneReviews hits.
 
