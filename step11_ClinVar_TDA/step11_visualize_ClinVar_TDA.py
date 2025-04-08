@@ -1,3 +1,5 @@
+## This is a helper script for assemblying relative TDA nodes in a final diagram that preserves the relative diameters of all TDA clusters. Diameters are driven by locus membership.
+
 ## The goal of this script is to to generate SVG circles that are of relative proportions for the purposes of TDA node visualization.
 
 ## In its current implementation, the script simply performs a log2-transformation of the geneNumber size of each TDA node

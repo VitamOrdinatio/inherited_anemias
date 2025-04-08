@@ -1,3 +1,6 @@
+## This python script converts g:Profiler HPO GSEA terms for our list of 199 anemia-enriched loci into a dataframe amenable to topological data analysis (TDA).
+## This approach effectively permits us a means to visualize and measure how genes and phenotypes interact in multidimensional space.
+
 ## Use this script to generate a dataframe that relates 199 anemia-enriched loci to 619 different HPO terms.
 ## Goal is to plot as a single gene-dot in 619th dimensional space, where each axis serves 1 of 619 HPO terms.
 ## TDA may reveal how these genes are interacting in 619th dimensional space.

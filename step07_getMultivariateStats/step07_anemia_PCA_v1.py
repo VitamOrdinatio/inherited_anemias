@@ -1,3 +1,7 @@
+## This script executes a battery of multivariate statistical analyses on all ClinVar allele categories drawn from our list of 199 anemia-enriched loci.
+## The initial dataset consists of a total of 192,296 unique alleles acdross six ClinVar categories (i.e., CC, B, LB, US, LP, and P)
+## As a first data-wrangling step, we removed alleles in the CC and US categories, to arrive at a dataset of 199 loci made up of 112,534 raw allele counts across four NCBI ClinVar categories (i.e., B, LB, LP, and P). These 112,534 unique alleles found in ClinVar are drawn from our list of 199 anemia-enriched loci.
+
 ## The following python script performs multivariate statistics (MVS) when given a ClinVar raw allele counts table as a CSV file in this format:
     # n rows where n = total gene number
     # 5 columns with labels: gene_name   B   LB   LP    P

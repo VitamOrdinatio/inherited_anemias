@@ -1,3 +1,5 @@
+## Scrape NCBI ClinVar for allele metadata regarding a list of 199 anemia-enriched loci
+
 ## Activate your Virtual Environment (vScrapeClinVar)
 ### navigate to .venv folder in wslshare
 ### run this command:

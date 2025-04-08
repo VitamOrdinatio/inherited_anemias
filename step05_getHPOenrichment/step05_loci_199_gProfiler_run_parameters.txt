@@ -1,3 +1,24 @@
+## This file contains the input arguments for a g:profiler run chasing a gene set enrichment analysis (GSEA) regarding several gene ontology (GO) databases, including the human phenotype ontology (HPO).
+
+## ENSEMBL GeneIDs (ENSG indices) were mapped to each of 199 anemia-enriched loci using g:profiler methods: g:GOSt and g:Convert. 
+
+## For more information on g:profiler, please consult the following peer-reviewed papers:
+	Liis Kolberg, Uku Raudvere, Ivan Kuzmin, Priit Adler, Jaak Vilo, Hedi Peterson: g:Profiler—interoperable web service for functional enrichment analysis and gene identifier mapping (2023 update) Nucleic Acids Research, May 2023; doi:10.1093/nar/gkad347.
+		[PDF]: https://biit.cs.ut.ee/gprofiler/gprofiler_nar_2023.pdf
+	
+	Jüri Reimand, Meelis Kull, Hedi Peterson, Jaanus Hansen, Jaak Vilo: g:Profiler — a web-based toolset for functional profiling of gene lists from large-scale experiments. (2007) Nucleic Acids Research 35 Web Server issue doi.org/10.1093/nar/gkm226
+		[PDF]: https://biit.cs.ut.ee/gprofiler/Reimand_Vilo_gProfiler_NARws2007.pdf
+	
+	Uku Raudvere, Liis Kolberg, Ivan Kuzmin, Tambet Arak, Priit Adler, Hedi Peterson, Jaak Vilo: g:Profiler: a web server for functional enrichment analysis and conversions of gene lists (2019 update) Nucleic Acids Research 2019; doi:10.1093/nar/gkz369. 
+		[PDF]: https://biit.cs.ut.ee/gprofiler/gprofiler_nar_2019.pdf
+
+	Jüri Reimand, Tambet Arak, Priit Adler, Liis Kolberg, Sulev Reisberg, Hedi Peterson, Jaak Vilo: g:Profiler -- a web server for functional interpretation of gene lists (2016 update) Nucleic Acids Research 2016; doi:10.1093/nar/gkw199. 
+		[PDF]: https://biit.cs.ut.ee/gprofiler/gprofiler_nar_2016.pdf
+
+	Jüri Reimand, Tambet Arak, Jaak Vilo: g:Profiler -- a web server for functional interpretation of gene lists (2011 update) Nucleic Acids Research 2011; doi:10.1093/nar/gkr378. 
+		[PDF]: https://biit.cs.ut.ee/gprofiler/gprofiler_nar_2011.pdf
+	
+
 Query parameters
 versione111_eg58_p18_f463989ddate11/16/2024, 12:39:43 PMorganismhsapiensquery length199all resultsfalseorderedfalseno ieafalsesourcesGO:MF, GO:CC, GO:BP, KEGG, REAC, TF, MIRNA, HPA, CORUM, HP, WPmultiqueryfalsenumeric nsENTREZGENE_ACCdomain scopeannotatedmeasure underrepresentationfalsesignificance threshold methodg_SCSuser threshold0.05no evidencesfalsehighlight resultstrue
 Included:

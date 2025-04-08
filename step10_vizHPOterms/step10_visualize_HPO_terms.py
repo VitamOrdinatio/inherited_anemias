@@ -1,3 +1,5 @@
+## Visualization of the interaction between genes (i.e., list of 199 anemia-enriched loci) and phenotypes (i.e., HPO enrichment terms regarding clinical manifestations)
+
 ## The goal of the following python script is to generate two word cloud figures:
     # 1) a word cloud of how frequent the 199 anemia-enriched loci are observed across 619 HPO terms
     # 2) a word cloud of how frequent the 619 HPO terms are encountered in the 199 loci dataset

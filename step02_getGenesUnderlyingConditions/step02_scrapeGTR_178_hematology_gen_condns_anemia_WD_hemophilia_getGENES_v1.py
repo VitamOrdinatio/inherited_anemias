@@ -1,3 +1,5 @@
+## Handle collated GTR conditions list to extract underlying loci
+
 ## Handling VENV pocket:
 
 #### Web-Scraping Environment

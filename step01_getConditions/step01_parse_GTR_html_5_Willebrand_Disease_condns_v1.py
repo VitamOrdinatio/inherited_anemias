@@ -1,3 +1,5 @@
+## Scrape NCBI GTR for Willebrand disease targets
+
 ## Activate your Virtual Environment (vScrapeClinVar)
 ### navigate to .venv folder in wslshare
 ### run this command:

@@ -1,3 +1,5 @@
+## The following arguments were utilized in the python module KeplerMapper for the purposes of topological data analysis (TDA).
+
 Mapper/Circos for the 199 genes with HPO coordinates:
 1. The three attached files starting with "Anemia199HPO" are the mapper .html output, the circos .svg, and the node membership .csv.
 2. Mapper was set to use 7 bins with a 25% overlap and scikit learn's DBSCAN as clusterer with espilon set to the median value from the distance matrix and the min cluster size set to 3.

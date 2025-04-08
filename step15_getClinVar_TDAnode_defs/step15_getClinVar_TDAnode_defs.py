@@ -1,3 +1,6 @@
+## This script helps us define the differences across each of the various TDA nodes generated from the ClinVar-TDA analysis.
+## TDA clusters (aka TDA nodes) contain gene members, and each TDA cluster can be defined by the mean aggregate of its gene members in terms of ClinVar allelic frequency distributions.
+
 ## The following python script generates TDA node definition plots by averaging allelic categorical frequencies for all genes found in a particular TDA node.
 
 ## The script requires the following two files in the input folder (./in)

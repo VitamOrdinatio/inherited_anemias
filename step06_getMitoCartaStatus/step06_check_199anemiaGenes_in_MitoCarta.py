@@ -1,3 +1,5 @@
+## Script that compares the MitoCarta list of 1,136 nuclear-encoded mitochondrial gene products to our list of 199 anemia-enriched loci scraped from NCBI GTR and NCBI ClinVar
+
 ## The following python script performs multivariate statistics (MVS) when given a ClinVar raw allele counts table as a CSV file in this format:
     # n rows where n = total gene number
     # 7 columns with labels: gene_name   CC    B   LB   US   LP    P
